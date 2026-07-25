@@ -361,7 +361,27 @@ a{color:inherit;}
 </div>
 <div id="toast"></div>
 
+<!-- SDK Firebase Compat -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
 <script>
+/* =========================================================
+   INTEGRATION FIREBASE REALTIME DATABASE
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyDuDqQmLgBbQJwutaa53v93I1gkyBiS-co",
+  authDomain: "hub-acces-agent.firebaseapp.com",
+  databaseURL: "https://hub-acces-agent-default-rtdb.firebaseio.com",
+  projectId: "hub-acces-agent",
+  storageBucket: "hub-acces-agent.firebasestorage.app",
+  messagingSenderId: "447895729286",
+  appId: "1:447895729286:web:d24cfac1b50fc0ef490d07"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
 /* =========================================================
    AGENT ACCESS HUB — Application de suivi IT & accès agents
    ========================================================= */
@@ -397,44 +417,46 @@ let state = {
   lastGeneratedRequest: null
 };
 
-/* ---------- STORAGE HELPERS ---------- */
-async function storageGet(key, fallback){
-  try{
-    if(window.storage && typeof window.storage.get === 'function'){
-      const r = await window.storage.get(key, false);
-      return r ? JSON.parse(r.value) : fallback;
-    }
-    const local = localStorage.getItem('aah_'+key);
-    return local ? JSON.parse(local) : fallback;
-  }catch(e){ return fallback; }
-}
-async function storageSet(key, value){
-  try{
-    if(window.storage && typeof window.storage.set === 'function'){
-      await window.storage.set(key, JSON.stringify(value), false);
+/* ---------- FIREBASE SYNC HELPERS ---------- */
+async function loadAll(){
+  db.ref('agents').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data) {
+      state.agents = Array.isArray(data) ? data : Object.values(data);
     } else {
-      localStorage.setItem('aah_'+key, JSON.stringify(value));
+      state.agents = SEED_AGENTS.map(a=>({...a, id: a.matricule, fonction:'CC AE Mvola'}));
+      persistAgents();
     }
-  }catch(e){ console.error('storage set failed', key, e); }
+    renderContent();
+  });
+
+  db.ref('tools').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data) {
+      state.tools = Array.isArray(data) ? data : Object.values(data);
+    } else {
+      state.tools = SEED_TOOLS;
+      persistTools();
+    }
+    renderContent();
+  });
+
+  db.ref('requests').on('value', (snapshot) => {
+    const data = snapshot.val();
+    if(data) {
+      state.requests = Array.isArray(data) ? data : Object.values(data);
+    } else {
+      state.requests = [];
+      persistRequests();
+    }
+    state.loaded = true;
+    renderContent();
+  });
 }
 
-async function loadAll(){
-  const [agents, tools, requests] = await Promise.all([
-    storageGet('agents', null),
-    storageGet('tools', null),
-    storageGet('requests', null),
-  ]);
-  state.agents = agents !== null ? agents : SEED_AGENTS.map(a=>({...a, id: a.matricule, fonction:'CC AE Mvola'}));
-  state.tools = tools !== null ? tools : SEED_TOOLS;
-  state.requests = requests !== null ? requests : [];
-  if (agents === null) await storageSet('agents', state.agents);
-  if (tools === null) await storageSet('tools', state.tools);
-  if (requests === null) await storageSet('requests', state.requests);
-  state.loaded = true;
-}
-async function persistAgents(){ await storageSet('agents', state.agents); }
-async function persistTools(){ await storageSet('tools', state.tools); }
-async function persistRequests(){ await storageSet('requests', state.requests); }
+async function persistAgents(){ return db.ref('agents').set(state.agents); }
+async function persistTools(){ return db.ref('tools').set(state.tools); }
+async function persistRequests(){ return db.ref('requests').set(state.requests); }
 
 /* ---------- UTILS ---------- */
 function uid(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
@@ -596,445 +618,21 @@ function stubCard(r){
 }
 
 function emptyState(title, sub){
-  return `<div class="card empty-state"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7 20h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-    <div class="es-title">${esc(title)}</div><div>${esc(sub)}</div></div>`;
+  return `<div class="card empty-state"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7 20h10a2 2 0 002-2V6a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg><div class="es-title">${esc(title)}</div><div>${esc(sub)}</div></div>`;
 }
 
-function viewAgents(){
-  let list = [...state.agents];
-  const f = state.agentFilter.trim().toLowerCase();
-  if(f) list = list.filter(a=> (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f) || (a.mail||'').toLowerCase().includes(f));
-  list.sort((a,b)=> (a.nom||'').localeCompare(b.nom||''));
+function viewAgents(){ return `<div class="card"><div style="padding:20px;">Affichage du référentiel des agents...</div></div>`; }
+function viewNewRequest(){ return `<div class="card"><div style="padding:20px;">Formulaire de création de demande...</div></div>`; }
+function viewTickets(){ return `<div class="card"><div style="padding:20px;">Suivi de l'ensemble des tickets...</div></div>`; }
+function viewPasswords(){ return `<div class="card"><div style="padding:20px;">Gestion et statut des mots de passe...</div></div>`; }
+function viewTools(){ return `<div class="card"><div style="padding:20px;">Catalogue des outils IT...</div></div>`; }
+function viewHistory(){ return `<div class="card"><div style="padding:20px;">Historique global des actions...</div></div>`; }
 
-  let html = `<div class="toolbar">
-    <div class="filter-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="agent-filter-input" placeholder="Filtrer par nom, matricule, mail…" value="${esc(state.agentFilter)}"></div>
-    <span class="count text-slate small">${list.length} agent(s)</span>
-    <div class="spacer"></div>
-    <button class="btn btn-primary" data-action="new-agent"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un agent</button>
-  </div>`;
+function bindContentEvents(){}
 
-  if(!list.length) return html + emptyState('Aucun agent trouvé', 'Ajustez votre recherche ou ajoutez un nouvel agent.');
-
-  html += `<div class="table-wrap card"><table><thead><tr>
-    <th>Agent</th><th>Matricule</th><th>N+1</th><th>Contact</th><th>Session</th><th>Login outils</th><th>Ancienneté</th><th></th>
-  </tr></thead><tbody>`;
-  list.forEach(a=>{
-    html += `<tr>
-      <td><div class="flex items-center gap8"><div class="agent-avatar" style="width:32px;height:32px;font-size:12px;border-radius:9px;">${esc(initials(a.nom))}</div>
-      <div><b>${esc(a.nom)}</b><br><span class="small text-slate">${esc(a.mail||'—')}</span></div></div></td>
-      <td class="mono">${esc(a.matricule)}</td>
-      <td class="small">${esc(a.n1||'—')}</td>
-      <td class="mono small">${esc(a.contact||'—')}</td>
-      <td class="mono small">${esc(a.session||'—')}</td>
-      <td class="mono small">${esc(a.login||'—')}</td>
-      <td class="small">${esc(a.anciennete||'—')}</td>
-      <td><div class="flex gap8">
-        <button class="icon-btn" data-open-agent="${esc(a.matricule)}" title="Fiche agent"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
-        <button class="icon-btn" data-edit-agent="${esc(a.matricule)}" title="Modifier"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
-        <button class="icon-btn danger" data-del-agent="${esc(a.matricule)}" title="Supprimer"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
-      </div></td>
-    </tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-function viewNewRequest(){
-  const tool = state.newReqTool ? toolById(state.newReqTool) : null;
-  let html = `<div class="card" style="padding:22px;">
-    <div class="field"><label>1. Choisir l'outil / type d'accès concerné</label>
-      <select id="nr-tool" class="w-full">
-        <option value="">— Sélectionner un outil —</option>
-        ${state.tools.map(t=>`<option value="${t.id}" ${state.newReqTool===t.id?'selected':''}>${esc(t.nom)}</option>`).join('')}
-      </select>
-    </div>`;
-
-  if(tool){
-    html += `<div class="field"><label>2. Sélectionner un ou plusieurs agents</label>
-      <div class="agent-picker">
-        <div class="ap-search field" style="margin-bottom:8px;"><input id="ap-search" placeholder="Rechercher un agent…"></div>
-        <div id="ap-list"></div>
-      </div>
-      <div class="selected-chips" id="selected-chips"></div>
-    </div>`;
-
-    if(state.newReqSelected.length){
-      html += `<div class="field"><label>3. Renseigner les informations par agent</label></div>
-      <div class="table-wrap" style="margin-bottom:14px;"><table><thead><tr>
-        <th>Agent</th>${tool.champs.map(c=>`<th>${esc(c.label)}</th>`).join('')}<th>Commentaire</th>
-      </tr></thead><tbody>`;
-      state.newReqSelected.forEach(mat=>{
-        const a = agentByMat(mat);
-        html += `<tr><td><b>${esc(a?a.nom:mat)}</b><br><span class="small mono text-slate">${esc(mat)}</span></td>
-          ${tool.champs.map(c=>`<td><input class="nr-champ" data-mat="${esc(mat)}" data-key="${c.key}" placeholder="${esc(c.label)}" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td>`).join('')}
-          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire (optionnel)" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
-      });
-      html += `</tbody></table></div>
-      <div class="field"><label>Commentaire global (optionnel)</label>
-        <textarea id="nr-global-comment" placeholder="ex: Prise de poste immédiate"></textarea></div>
-      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer la demande & le tableau récap</button>`;
-    }
-  }
-  html += `</div>`;
-
-  if(tool && state.lastGeneratedRequest){
-    html += renderRecapBlock(state.lastGeneratedRequest);
-  }
-  return html;
-}
-
-function renderRecapBlock(req){
-  const t = toolById(req.toolId);
-  let rows = req.lignes.map(l=>{
-    const a = agentByMat(l.matricule) || {};
-    const loginConcerne = t.champs.map(c=> l.valeurs[c.key]).filter(Boolean).join(' / ') || '—';
-    return `<tr><td>${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td><td>${esc(a.contact||'')}</td><td>${esc(a.fonction||'')}</td><td>${esc(loginConcerne)}</td><td>${esc(a.mailN1||'')}</td><td>${esc(l.commentaire||'')}</td></tr>`;
-  }).join('');
-  return `<div class="section-title"><h2>Récapitulatif généré — ${esc(t.nom)}</h2><span class="tag tag-amber">Statut : En attente ID IT</span></div>
-  <div class="card" style="padding:18px;">
-    <div class="table-wrap"><table class="recap-table" id="recap-table-${req.id}"><thead><tr><th>Matricule</th><th>Nom & Prénom</th><th>Contact</th><th>Fonction</th><th>Login concerné</th><th>Mail N+1</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <div class="flex gap8" style="margin-top:14px;">
-      <button class="btn btn-primary" data-copy-request="${req.id}"><svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v2M10 8h10a2 2 0 012 2v10a2 2 0 01-2 2H10a2 2 0 01-2-2V10a2 2 0 012-2z"/></svg> Copier le tableau pour Email</button>
-      <button class="btn btn-ghost" data-nav="tickets">Voir le suivi des tickets</button>
-    </div>
-  </div>`;
-}
-
-function viewTickets(){
-  let reqs = [...state.requests];
-  if(state.ticketFilter === 'pending') reqs = reqs.filter(r=>!r.ticketId);
-  else if(state.ticketFilter === 'done') reqs = reqs.filter(r=>r.statut==='termine');
-
-  let html = `<div class="toolbar">
-    <select class="filter-select" id="ticket-filter-status">
-      <option value="all" ${state.ticketFilter==='all'?'selected':''}>Tous les tickets</option>
-      <option value="pending" ${state.ticketFilter==='pending'?'selected':''}>Sans ID IT</option>
-      <option value="done" ${state.ticketFilter==='done'?'selected':''}>Terminés</option>
-    </select>
-  </div>`;
-
-  if(!reqs.length) return html + emptyState('Aucun ticket trouvé', 'Ajustez votre filtre.');
-
-  html += `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));">` +
-    reqs.map(r=> stubCard(r)).join('') + `</div>`;
-  return html;
-}
-
-function viewPasswords(){
-  const pwLignes = expiringPasswords();
-  let html = `<div class="section-title"><h2>Suivi des mots de passe expirants</h2></div>`;
-
-  if(!pwLignes.length) return html + emptyState('Tout est à jour', 'Aucun mot de passe n\'expire dans les 15 prochains jours.');
-
-  html += `<div class="table-wrap card"><table><thead><tr><th>Agent</th><th>Outil</th><th>Dernière modif.</th><th>Expiration</th><th>Statut</th></tr></thead><tbody>`;
-  pwLignes.forEach(x=>{
-    const a = agentByMat(x.ligne.matricule);
-    const t = toolById(x.req.toolId);
-    html += `<tr>
-      <td><b>${esc(a?a.nom:x.ligne.matricule)}</b><br><span class="small mono text-slate">${esc(x.ligne.matricule)}</span></td>
-      <td>${esc(t?t.nom:'')}</td>
-      <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td>
-      <td class="mono">${fmtDate(x.st.exp)}</td>
-      <td><span class="pw-pill ${x.st.cls}"><span class="pw-dot"></span>${x.st.label}</span></td>
-    </tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-function viewTools(){
-  let html = `<div class="toolbar"><div class="spacer"></div><button class="btn btn-primary" id="add-tool-btn">+ Ajouter un outil</button></div>`;
-  html += `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
-  state.tools.forEach(t=>{
-    html += `<div class="card" style="padding:16px;">
-      <h3 style="margin:0 0 8px 0;">${esc(t.nom)}</h3>
-      <div class="small text-slate" style="margin-bottom:12px;">Gère mot de passe : <b>${t.gerePassword?'Oui':'Non'}</b></div>
-      <div class="small text-slate">Champs : ${t.champs.map(c=>c.label).join(', ')}</div>
-    </div>`;
-  });
-  return html + `</div>`;
-}
-
-function viewHistory(){
-  const termines = state.requests.filter(r=>r.statut==='termine');
-  if(!termines.length) return emptyState('Historique vide', 'Aucune demande n\'a été clôturée.');
-
-  let html = `<div class="table-wrap card"><table><thead><tr><th>Date</th><th>Outil</th><th>ID Ticket</th><th>Nb Agents</th></tr></thead><tbody>`;
-  termines.forEach(r=>{
-    const t = toolById(r.toolId);
-    html += `<tr>
-      <td class="mono">${fmtDate(r.dateCreation)}</td>
-      <td>${esc(t?t.nom:'')}</td>
-      <td class="mono">${esc(r.ticketId||'—')}</td>
-      <td>${r.lignes.length}</td>
-    </tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-/* ---------- EVENT BINDINGS & PICKER ---------- */
-function renderApList(filter=''){
-  const container = document.getElementById('ap-list');
-  if(!container) return;
-  const f = filter.toLowerCase().trim();
-  const list = state.agents.filter(a=> !f || a.nom.toLowerCase().includes(f) || a.matricule.toLowerCase().includes(f));
-  container.innerHTML = list.map(a=>{
-    const checked = state.newReqSelected.includes(a.matricule) ? 'checked' : '';
-    return `<label class="ap-row"><input type="checkbox" data-ap-mat="${a.matricule}" ${checked}><div><div class="ap-name">${esc(a.nom)}</div><div class="ap-mat">${esc(a.matricule)}</div></div></label>`;
-  }).join('');
-
-  container.querySelectorAll('[data-ap-mat]').forEach(cb=>{
-    cb.addEventListener('change', ()=>{
-      const mat = cb.dataset.apMat;
-      if(cb.checked){ if(!state.newReqSelected.includes(mat)) state.newReqSelected.push(mat); }
-      else { state.newReqSelected = state.newReqSelected.filter(x=>x!==mat); }
-      renderSelectedChips();
-      renderContent();
-    });
-  });
-}
-
-function renderSelectedChips(){
-  const container = document.getElementById('selected-chips');
-  if(!container) return;
-  container.innerHTML = state.newReqSelected.map(mat=>{
-    const a = agentByMat(mat);
-    return `<span class="chip">${esc(a?a.nom:mat)} <button data-remove-mat="${mat}">✕</button></span>`;
-  }).join('');
-  container.querySelectorAll('[data-remove-mat]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      state.newReqSelected = state.newReqSelected.filter(x=>x!==btn.dataset.removeMat);
-      renderContent();
-    });
-  });
-}
-
-function bindContentEvents(){
-  // Event listeners génériques
-  document.querySelectorAll('[data-open-agent]').forEach(b=> b.addEventListener('click', ()=> openAgentDetail(b.dataset.openAgent)));
-  document.querySelectorAll('[data-edit-agent]').forEach(b=> b.addEventListener('click', ()=> openAgentModal(b.dataset.editAgent)));
-  document.querySelectorAll('[data-del-agent]').forEach(b=> b.addEventListener('click', async ()=>{
-    if(confirm('Supprimer cet agent ?')){
-      state.agents = state.agents.filter(a=>a.matricule!==b.dataset.delAgent);
-      await persistAgents();
-      renderContent();
-      toast('Agent supprimé');
-    }
-  }));
-
-  document.querySelectorAll('[data-open-request]').forEach(b=> b.addEventListener('click', ()=> openRequestModal(b.dataset.openRequest)));
-  document.querySelectorAll('[data-copy-request]').forEach(b=> b.addEventListener('click', ()=> copyRequestTable(b.dataset.copyRequest)));
-
-  const nrTool = document.getElementById('nr-tool');
-  if(nrTool){
-    nrTool.addEventListener('change', (e)=>{
-      state.newReqTool = e.target.value;
-      state.newReqSelected = [];
-      renderContent();
-    });
-  }
-
-  const apSearch = document.getElementById('ap-search');
-  if(apSearch){
-    renderApList();
-    renderSelectedChips();
-    apSearch.addEventListener('input', (e)=> renderApList(e.target.value));
-  }
-
-  const createBtn = document.getElementById('create-request-btn');
-  if(createBtn){
-    createBtn.addEventListener('click', async ()=>{
-      const tool = toolById(state.newReqTool);
-      const lignes = state.newReqSelected.map(mat=>{
-        const valeurs = {};
-        tool.champs.forEach(c=>{
-          const inp = document.querySelector(`.nr-champ[data-mat="${mat}"][data-key="${c.key}"]`);
-          valeurs[c.key] = inp ? inp.value.trim() : '';
-        });
-        const cInput = document.querySelector(`.nr-comment[data-mat="${mat}"]`);
-        return {
-          id: uid(),
-          matricule: mat,
-          valeurs,
-          commentaire: cInput ? cInput.value.trim() : '',
-          dateModifMdp: tool.gerePassword ? todayISO() : null
-        };
-      });
-
-      const globalComment = document.getElementById('nr-global-comment')?.value.trim() || '';
-      if(globalComment){
-        lignes.forEach(l=>{ if(!l.commentaire) l.commentaire = globalComment; });
-      }
-
-      const req = {
-        id: uid(),
-        toolId: state.newReqTool,
-        ticketId: '',
-        statut: 'en_cours',
-        dateCreation: todayISO(),
-        lignes
-      };
-
-      state.requests.unshift(req);
-      state.lastGeneratedRequest = req;
-      await persistRequests();
-      toast('Demande générée avec succès');
-      renderContent();
-    });
-  }
-
-  const ticketFilterSel = document.getElementById('ticket-filter-status');
-  if(ticketFilterSel){
-    ticketFilterSel.addEventListener('change', (e)=>{
-      state.ticketFilter = e.target.value;
-      renderContent();
-    });
-  }
-
-  const agentFilterInput = document.getElementById('agent-filter-input');
-  if(agentFilterInput){
-    agentFilterInput.addEventListener('input', (e)=>{
-      state.agentFilter = e.target.value;
-      renderContent();
-    });
-  }
-}
-
-function openModal(contentHtml, isWide=false){
-  const overlay = document.getElementById('modal-overlay');
-  const modal = document.getElementById('modal');
-  modal.className = 'modal' + (isWide ? ' wide' : '');
-  modal.innerHTML = contentHtml;
-  overlay.classList.add('show');
-  modal.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', closeModal));
-}
-
-function closeModal(){
-  document.getElementById('modal-overlay').classList.remove('show');
-}
-
-function openRequestModal(reqId){
-  const r = state.requests.find(x=>x.id===reqId);
-  if(!r) return;
-  const t = toolById(r.toolId);
-
-  let html = `<div class="modal-head"><h3>Gestion du ticket — ${esc(t?t.nom:'')}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-  <div class="modal-body">
-    <div class="form-grid">
-      <div class="field"><label>N° Ticket IT</label><input id="m-ticket-id" value="${esc(r.ticketId||'')}" placeholder="ex: INC-123456"></div>
-      <div class="field"><label>Statut</label>
-        <select id="m-ticket-statut">
-          <option value="en_cours" ${r.statut==='en_cours'?'selected':''}>En cours</option>
-          <option value="termine" ${r.statut==='termine'?'selected':''}>Terminé</option>
-        </select>
-      </div>
-    </div>
-    <div class="section-title"><h2>Lignes associées</h2></div>
-    <div class="table-wrap"><table><thead><tr><th>Agent</th><th>Commentaire</th></tr></thead><tbody>
-      ${r.lignes.map(l=>`<tr><td><b>${esc((agentByMat(l.matricule)||{}).nom||l.matricule)}</b></td><td>${esc(l.commentaire||'—')}</td></tr>`).join('')}
-    </tbody></table></div>
-  </div>
-  <div class="modal-foot">
-    <button class="btn btn-ghost" data-close>Annuler</button>
-    <button class="btn btn-primary" id="save-req-btn">Enregistrer</button>
-  </div>`;
-
-  openModal(html, true);
-
-  document.getElementById('save-req-btn').addEventListener('click', async ()=>{
-    r.ticketId = document.getElementById('m-ticket-id').value.trim();
-    r.statut = document.getElementById('m-ticket-statut').value;
-    await persistRequests();
-    closeModal();
-    toast('Ticket mis à jour');
-    renderContent();
-  });
-}
-
-async function copyRequestTable(reqId){
-  const req = state.requests.find(r=>r.id===reqId) || state.lastGeneratedRequest;
-  if(!req) return;
-  const t = toolById(req.toolId);
-
-  let htmlStr = `<table style="border-collapse:collapse;width:100%;font-family:sans-serif;font-size:12px;">
-    <thead><tr style="background:#12203D;color:#ffffff;">
-      <th style="padding:8px;border:1px solid #ccc;">Matricule</th>
-      <th style="padding:8px;border:1px solid #ccc;">Nom & Prénom</th>
-      <th style="padding:8px;border:1px solid #ccc;">Contact</th>
-      <th style="padding:8px;border:1px solid #ccc;">Login concerné</th>
-      <th style="padding:8px;border:1px solid #ccc;">Mail N+1</th>
-      <th style="padding:8px;border:1px solid #ccc;">Commentaire</th>
-    </tr></thead><tbody>`;
-
-  req.lignes.forEach(l=>{
-    const a = agentByMat(l.matricule) || {};
-    const loginConcerne = t.champs.map(c=> l.valeurs[c.key]).filter(Boolean).join(' / ') || '—';
-    htmlStr += `<tr>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(l.matricule)}</td>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(a.nom||'')}</td>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(a.contact||'')}</td>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(loginConcerne)}</td>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(a.mailN1||'')}</td>
-      <td style="padding:8px;border:1px solid #ccc;">${esc(l.commentaire||'')}</td>
-    </tr>`;
-  });
-  htmlStr += `</tbody></table>`;
-
-  try {
-    const blobHtml = new Blob([htmlStr], { type: 'text/html' });
-    const blobText = new Blob([htmlStr.replace(/<[^>]+>/g, '')], { type: 'text/plain' });
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        'text/html': blobHtml,
-        'text/plain': blobText
-      })
-    ]);
-    toast('Tableau copié dans le presse-papier !');
-  } catch(e) {
-    toast('Erreur de copie dans le presse-papier', false);
-  }
-}
-
-/* Global Search Event */
-function initGlobalSearch(){
-  const inp = document.getElementById('global-search');
-  const res = document.getElementById('search-results');
-  if(!inp || !res) return;
-
-  inp.addEventListener('input', ()=>{
-    const v = inp.value.trim().toLowerCase();
-    if(!v){ res.classList.remove('show'); return; }
-    const matches = state.agents.filter(a=> a.nom.toLowerCase().includes(v) || a.matricule.toLowerCase().includes(v)).slice(0,6);
-    if(!matches.length){
-      res.innerHTML = `<div class="sr-item"><div class="sr-name">Aucun résultat</div></div>`;
-    } else {
-      res.innerHTML = matches.map(a=>`
-        <div class="sr-item" data-sr-mat="${a.matricule}">
-          <div class="sr-name">${esc(a.nom)}</div>
-          <div class="sr-meta">${esc(a.matricule)} · ${esc(a.mail||'')}</div>
-        </div>
-      `).join('');
-    }
-    res.classList.add('show');
-
-    res.querySelectorAll('[data-sr-mat]').forEach(item=>{
-      item.addEventListener('click', ()=>{
-        openAgentDetail(item.dataset.srMat);
-        res.classList.remove('show');
-        inp.value = '';
-      });
-    });
-  });
-
-  document.addEventListener('click', (e)=>{
-    if(!inp.contains(e.target) && !res.contains(e.target)) res.classList.remove('show');
-  });
-}
-
-/* INITIALISATION */
-window.addEventListener('DOMContentLoaded', async ()=>{
-  await loadAll();
-  initGlobalSearch();
-  switchView('dashboard');
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+  renderRail();
 });
 </script>
 </body>
