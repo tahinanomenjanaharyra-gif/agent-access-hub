@@ -1,0 +1,384 @@
+`btn-sm" data-delete-request="${req.id}">Supprimer
+
+Fermer
+Enregistrer
+
+document.getElementById('save-request-btn').addEventListener('click', async ()=>{
+req.ticketId = document.getElementById('req-ticket').value.trim();
+req.statut = document.getElementById('req-statut').value;
+req.commentaireGlobal = document.getElementById('req-comment').value.trim();
+
+```
+document.querySelectorAll('.rl-mdp').forEach(inp=>{
+  const rId = inp.dataset.req;
+  const lId = inp.dataset.ligne;
+  const l = req.lignes.find(x=>x.id===lId);
+  if(l) l.motDePasse = inp.value.trim();
+});
+document.querySelectorAll('.rl-date').forEach(inp=>{
+  const l = req.lignes.find(x=>x.id===inp.dataset.ligne);
+  if(l) l.dateModifMdp = inp.value;
+});
+document.querySelectorAll('.rl-comment').forEach(inp=>{
+  const l = req.lignes.find(x=>x.id===inp.dataset.ligne);
+  if(l) l.commentaire = inp.value.trim();
+});
+
+await persistRequests();
+closeModal();
+toast('Demande mise à jour');
+renderContent();
+
+```
+
+});
+
+const delBtn = document.querySelector('[data-delete-request]');
+if(delBtn){
+delBtn.addEventListener('click', async ()=>{
+if(confirm('Voulez-vous vraiment supprimer cette demande ?')){
+state.requests = state.requests.filter(r=>r.id!==req.id);
+await persistRequests();
+closeModal();
+toast('Demande supprimée');
+renderContent();
+}
+});
+}
+}
+
+/* =========================================================
+VIEW: MOTS DE PASSE
+========================================================= */
+function viewPasswords(){
+const all = allLignes().filter(x=> toolById(x.req.toolId)?.gerePassword);
+
+let filtered = all;
+if(state.pwFilter === 'expired') filtered = all.filter(x=> pwStatus(x.ligne.dateModifMdp).cls === 'pw-red');
+else if(state.pwFilter === 'warning') filtered = all.filter(x=> pwStatus(x.ligne.dateModifMdp).cls === 'pw-orange');
+else if(state.pwFilter === 'ok') filtered = all.filter(x=> pwStatus(x.ligne.dateModifMdp).cls === 'pw-green');
+else if(state.pwFilter === 'unset') filtered = all.filter(x=> !x.ligne.dateModifMdp);
+
+let html = `
+
+<option value="all" ${state.pwFilter==='all'?'selected':''}>Tous les statuts (${all.length})
+<option value="expired" ${state.pwFilter==='expired'?'selected':''}>Expirés (>90j)
+<option value="warning" ${state.pwFilter==='warning'?'selected':''}>À renouveler (≤15j)
+<option value="ok" ${state.pwFilter==='ok'?'selected':''}>Valides
+<option value="unset" ${state.pwFilter==='unset'?'selected':''}>Non renseignés</option>
+</select>
+<span class="count text-slate small">${filtered.length} ligne(s)
+
+if(!filtered.length){ html += emptyState('Aucun mot de passe dans cette catégorie', 'Ajustez le filtre pour afficher les autres données.'); return html; }
+
+html += `
+AgentMatriculeOutilMot de passeDernière modif.Statut expirationAction
+
+filtered.forEach(x=>{
+const a = agentByMat(x.ligne.matricule) || {};
+const t = toolById(x.req.toolId);
+const st = pwStatus(x.ligne.dateModifMdp);
+html += `<tr> <td><b>${esc(a.nom || x.ligne.matricule)}</b></td> <td class="mono">${esc(x.ligne.matricule)}</td> <td>${esc(t ? t.nom : '')}</td> <td class="mono">${esc(x.ligne.motDePasse || '—')}</td> <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td> <td><span class="pw-pill ${st.cls}"><span class="pw-dot"></span>${st.label}</span></td> <td><button class="btn btn-ghost btn-sm" data-reset-pw="${x.req.id}|${x.ligne.id}">⚡ Réinitialiser aujourd'hui</button></td> </tr>`;
+});
+html += `</tbody></table></div>`;
+return html;
+}
+
+/* =========================================================
+VIEW: OUTILS
+========================================================= */
+function viewTools(){
+let html = `
+
+ Ajouter un outil
+
+state.tools.forEach(t=>{
+html += `<div class="card" style="padding:18px;border-top:4px solid ${t.couleur || 'var(--amber)'};"> <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;"> <h3 style="margin:0;font-size:16px;">${esc(t.nom)}</h3> <button class="icon-btn danger" data-del-tool="${t.id}"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button> </div> <div class="small text-slate" style="margin-bottom:12px;">Champs configurés :</div> <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;"> ${t.champs.map(c=>`${esc(c.label)}`).join('')} </div> <div class="small">Gestion mot de passe : <b>${t.gerePassword ? 'Oui (90j)' : 'Non'}</b></div> </div>`;
+});
+html += `</div>`;
+return html;
+}
+
+function openAddToolModal(){
+openModal(`<div class="modal-head"><h3>Ajouter un outil</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div> <div class="modal-body"> <div class="field"><label>Nom de l'outil *</label><input id="nt-nom" placeholder="ex: VPN Fortinet"></div> <div class="field"><label>Couleur d'accentuation</label><input type="color" id="nt-color" value="#4C6FFF" style="height:40px;padding:2px;"></div> <div class="field"><label>Champs nécessaires (séparés par des virgules)</label><input id="nt-champs" placeholder="ex: Login VPN, Adresse IP"></div> <div class="field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;"> <input type="checkbox" id="nt-pw" checked style="width:18px;height:18px;"> Suivi du mot de passe (expiration à 90 jours) </label></div> </div> <div class="modal-foot"> <button class="btn btn-ghost" data-close>Annuler</button> <button class="btn btn-primary" id="save-tool-btn">Créer l'outil</button> </div>`);
+
+document.getElementById('save-tool-btn').addEventListener('click', async ()=>{
+const nom = document.getElementById('nt-nom').value.trim();
+if(!nom){ toast('Le nom de l'outil est obligatoire', false); return; }
+const champsRaw = document.getElementById('nt-champs').value.split(',').map(s=>s.trim()).filter(Boolean);
+const champs = champsRaw.length ? champsRaw.map((c,i)=>({key:'c'+i, label:c})) : [{key:'login', label:'Login'}];
+const newTool = {
+id: 'tool_'+Date.now(),
+nom: nom,
+couleur: document.getElementById('nt-color').value,
+champs: champs,
+gerePassword: document.getElementById('nt-pw').checked
+};
+state.tools.push(newTool);
+await persistTools();
+closeModal();
+toast('Outil ajouté');
+renderContent();
+});
+}
+
+/* =========================================================
+VIEW: HISTORIQUE & ANALYSE
+========================================================= */
+function viewHistory(){
+const termines = state.requests.filter(r=> r.statut==='termine' || r.ticketId);
+
+let html = `<div class="toolbar"> <select class="filter-select" id="history-agent-filter"> <option value="">Tous les agents</option> ${state.agents.map(a=>`<option value="${a.matricule}" ${state.historyAgent===a.matricule?'selected':''}>${esc(a.nom)} (${a.matricule})`).join('')}
+
+${termines.length} demande(s) enregistrée(s)
+
+let lignes = allLignes();
+if(state.historyAgent) lignes = lignes.filter(x=> x.ligne.matricule === state.historyAgent);
+
+if(!lignes.length){ html += emptyState('Aucune donnée dans l'historique', 'Sélectionnez un autre agent ou créez des demandes.'); return html; }
+
+html += `
+DateAgentOutilID TicketStatutCommentaireAnalyse cause
+
+lignes.forEach(x=>{
+const a = agentByMat(x.ligne.matricule) || {};
+const t = toolById(x.req.toolId);
+html += `<tr> <td class="mono small">${fmtDate(x.req.dateCreation)}</td> <td><b>${esc(a.nom || x.ligne.matricule)}</b><br><span class="small mono text-slate">${esc(x.ligne.matricule)}</span></td> <td>${esc(t ? t.nom : '')}</td> <td class="mono">${esc(x.req.ticketId || '—')}</td> <td>${statutTag(x.req.statut, x.req.ticketId)}</td> <td class="small">${esc(x.ligne.commentaire || '—')}</td> <td><select class="filter-select" data-hist-cause="${x.req.id}|${x.ligne.id}"> <option value="" ${!x.ligne.causeType?'selected':''}>— Non renseigné —</option> <option value="agent" ${x.ligne.causeType==='agent'?'selected':''}>Cause Agent (erreur / mauvaise manip)</option> <option value="outil" ${x.ligne.causeType==='outil'?'selected':''}>Cause Outil (dysfonctionnement récurrent)</option> </select></td> </tr>`;
+});
+html += `</tbody></table></div>`;
+return html;
+}
+
+/* =========================================================
+EVENTS BINDING & GLOBAL SEARCH
+========================================================= */
+function bindContentEvents(){
+const c = document.getElementById('content');
+
+// Search filter agents
+const afInput = document.getElementById('agent-filter-input');
+if(afInput){
+afInput.addEventListener('input', (e)=>{ state.agentFilter = e.target.value; renderContent(); });
+}
+
+// Agent Actions
+c.querySelectorAll('[data-action="new-agent"]').forEach(b=> b.addEventListener('click', ()=> openAgentModal()));
+c.querySelectorAll('[data-edit-agent]').forEach(b=> b.addEventListener('click', ()=> openAgentModal(b.dataset.editAgent)));
+c.querySelectorAll('[data-open-agent]').forEach(b=> b.addEventListener('click', ()=> openAgentDetail(b.dataset.openAgent)));
+c.querySelectorAll('[data-del-agent]').forEach(b=> b.addEventListener('click', async ()=>{
+if(confirm('Supprimer cet agent du référentiel ?')){
+state.agents = state.agents.filter(a=>a.matricule!==b.dataset.delAgent);
+await persistAgents();
+toast('Agent supprimé');
+renderContent();
+}
+}));
+
+// New request selectors
+const nrTool = document.getElementById('nr-tool');
+if(nrTool){
+nrTool.addEventListener('change', (e)=>{
+state.newReqTool = e.target.value;
+state.newReqSelected = [];
+renderContent();
+});
+}
+if(document.getElementById('ap-search')){
+document.getElementById('ap-search').addEventListener('input', (e)=> renderApList(e.target.value));
+renderApList();
+renderSelectedChips();
+}
+
+// Create Request
+const crBtn = document.getElementById('create-request-btn');
+if(crBtn){
+crBtn.addEventListener('click', async ()=>{
+const tool = toolById(state.newReqTool);
+const globalComment = document.getElementById('nr-global-comment')?.value.trim() || '';
+const lignes = state.newReqSelected.map(mat=>{
+const vals = {};
+tool.champs.forEach(ch=>{
+const inp = document.querySelector(`.nr-champ[data-mat="${mat}"][data-key="${ch.key}"]`);
+if(inp) vals[ch.key] = inp.value.trim();
+});
+const cInp = document.querySelector(`.nr-comment[data-mat="${mat}"]`);
+const commentLigne = cInp ? cInp.value.trim() : '';
+const fullComment = [commentLigne, globalComment].filter(Boolean).join(' - ');
+return {
+id: uid(),
+matricule: mat,
+valeurs: vals,
+motDePasse: '',
+dateModifMdp: todayISO(),
+commentaire: fullComment,
+causeType: ''
+};
+});
+
+```
+  const newReq = {
+    id: uid(),
+    toolId: tool.id,
+    dateCreation: todayISO(),
+    ticketId: '',
+    statut: 'en_cours',
+    commentaireGlobal: globalComment,
+    lignes: lignes
+  };
+
+  state.requests.unshift(newReq);
+  state.lastGeneratedRequest = newReq;
+  await persistRequests();
+  toast('Demande créée avec succès !');
+  renderContent();
+});
+
+```
+
+}
+
+// Requests interaction
+c.querySelectorAll('[data-open-request]').forEach(b=> b.addEventListener('click', ()=> openRequestModal(b.dataset.openRequest)));
+c.querySelectorAll('[data-copy-request]').forEach(b=> b.addEventListener('click', ()=> copyRecapTable(b.dataset.copyRequest)));
+
+// Ticket filters
+const tf = document.getElementById('ticket-filter');
+if(tf) tf.addEventListener('change', (e)=>{ state.ticketFilter = e.target.value; renderContent(); });
+const ttf = document.getElementById('ticket-tool-filter');
+if(ttf) ttf.addEventListener('change', (e)=>{ state.ticketToolFilter = e.target.value; renderContent(); });
+
+// Password filters & resets
+const pwf = document.getElementById('pw-filter');
+if(pwf) pwf.addEventListener('change', (e)=>{ state.pwFilter = e.target.value; renderContent(); });
+c.querySelectorAll('[data-reset-pw]').forEach(b=>{
+b.addEventListener('click', async ()=>{
+const [rId, lId] = b.dataset.resetPw.split('|');
+const req = state.requests.find(r=>r.id===rId);
+const l = req.lignes.find(x=>x.id===lId);
+if(l){
+l.dateModifMdp = todayISO();
+await persistRequests();
+toast('Mot de passe réinitialisé à aujourd'hui');
+renderContent();
+}
+});
+});
+
+// Tools Actions
+const addToolBtn = document.getElementById('add-tool-btn');
+if(addToolBtn) addToolBtn.addEventListener('click', openAddToolModal);
+c.querySelectorAll('[data-del-tool]').forEach(b=>{
+b.addEventListener('click', async ()=>{
+if(confirm('Supprimer cet outil ?')){
+state.tools = state.tools.filter(t=>t.id!==b.dataset.delTool);
+await persistTools();
+toast('Outil supprimé');
+renderContent();
+}
+});
+});
+
+// History Actions
+const haf = document.getElementById('history-agent-filter');
+if(haf) haf.addEventListener('change', (e)=>{ state.historyAgent = e.target.value; renderContent(); });
+c.querySelectorAll('[data-hist-cause]').forEach(sel=>{
+sel.addEventListener('change', async ()=>{
+const [rId, lId] = sel.dataset.histCause.split('|');
+const req = state.requests.find(r=>r.id===rId);
+const l = req.lignes.find(x=>x.id===lId);
+l.causeType = sel.value;
+await persistRequests();
+toast('Analyse cause mise à jour');
+});
+});
+
+// General Nav links inside elements
+c.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=> switchView(b.dataset.nav)));
+}
+
+/* Copy formatted HTML table for Clipboard (ready for Outlook/Mail) */
+function copyRecapTable(reqId){
+const req = state.requests.find(r=>r.id===reqId);
+if(!req) return;
+const t = toolById(req.toolId);
+
+let htmlStr = `<table border="1" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:13px;width:100%;"> <thead> <tr style="background-color:#12203D;color:#ffffff;text-align:left;"> <th style="padding:8px;">Matricule</th> <th style="padding:8px;">Nom & Prénom</th> <th style="padding:8px;">Contact</th> <th style="padding:8px;">Fonction</th> <th style="padding:8px;">Login concerné</th> <th style="padding:8px;">Mail N+1</th> <th style="padding:8px;">Commentaire</th> </tr> </thead> <tbody>`;
+
+req.lignes.forEach((l, idx)=>{
+const a = agentByMat(l.matricule) || {};
+const loginConcerne = t.champs.map(c=> l.valeurs[c.key]).filter(Boolean).join(' / ') || '—';
+const bg = idx % 2 === 0 ? '#ffffff' : '#f8f9fa';
+htmlStr += `<tr style="background-color:${bg};"> <td style="padding:8px;">${esc(l.matricule)}</td> <td style="padding:8px;">${esc(a.nom||'')}</td> <td style="padding:8px;">${esc(a.contact||'')}</td> <td style="padding:8px;">${esc(a.fonction||'')}</td> <td style="padding:8px;">${esc(loginConcerne)}</td> <td style="padding:8px;">${esc(a.mailN1||'')}</td> <td style="padding:8px;">${esc(l.commentaire||'')}</td> </tr>`;
+});
+htmlStr += `</tbody></table>`;
+
+const blob = new Blob([htmlStr], { type: 'text/html' });
+const data = [new ClipboardItem({ 'text/html': blob })];
+
+navigator.clipboard.write(data).then(()=>{
+toast('Tableau copié dans le presse-papier !');
+}).catch(()=>{
+navigator.clipboard.writeText(htmlStr).then(()=> toast('Tableau copié (HTML text) !'));
+});
+}
+
+/* Modal Helpers */
+function openModal(contentHtml, isWide=false){
+const overlay = document.getElementById('modal-overlay');
+const modal = document.getElementById('modal');
+modal.className = 'modal' + (isWide ? ' wide' : '');
+modal.innerHTML = contentHtml;
+overlay.classList.add('show');
+modal.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', closeModal));
+}
+function closeModal(){
+document.getElementById('modal-overlay').classList.remove('show');
+}
+
+/* Global Search Input */
+function setupGlobalSearch(){
+const inp = document.getElementById('global-search');
+const res = document.getElementById('search-results');
+
+inp.addEventListener('input', ()=>{
+const val = inp.value.trim().toLowerCase();
+if(!val){ res.classList.remove('show'); return; }
+
+```
+const matches = state.agents.filter(a=> (a.nom||'').toLowerCase().includes(val) || (a.matricule||'').toLowerCase().includes(val)).slice(0,6);
+if(!matches.length){
+  res.innerHTML = `<div class="sr-item text-slate small">Aucun résultat</div>`;
+} else {
+  res.innerHTML = matches.map(a=>`<div class="sr-item" data-select-mat="${a.matricule}">
+    <div class="sr-name">${esc(a.nom)}</div>
+    <div class="sr-meta">${esc(a.matricule)} · ${esc(a.fonction||'CC AE Mvola')}</div>
+  </div>`).join('');
+}
+res.classList.add('show');
+
+res.querySelectorAll('[data-select-mat]').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    res.classList.remove('show');
+    inp.value = '';
+    openAgentDetail(el.dataset.selectMat);
+  });
+});
+
+```
+
+});
+
+document.addEventListener('click', (e)=>{
+if(!inp.contains(e.target) && !res.contains(e.target)) res.classList.remove('show');
+});
+}
+
+/* ---------- INIT APP ---------- */
+async function init(){
+await loadAll();
+renderRail();
+renderContent();
+setupGlobalSearch();
+}
+
+init();
