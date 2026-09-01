@@ -381,7 +381,7 @@ a{color:inherit;}
 /* ---------- CONFIGURATION SUPABASE ---------- */
 const SUPABASE_URL = 'https://TON-PROJET.supabase.co';
 const SUPABASE_ANON_KEY = 'TA_CLE_ANON';
-let supabase = null;
+supabase = null;
 
 if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'https://TON-PROJET.supabase.co') {
   supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
