@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Supabase Client JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --ink:#12203D;
@@ -373,11 +375,20 @@ a{color:inherit;}
 <script>
 /* =========================================================
    AGENT ACCESS HUB — Application de suivi IT & accès agents
-   Stockage : window.storage (persistant, personnel)
+   Stockage : Supabase + Fallback Storage Local
    ========================================================= */
 
+/* ---------- CONFIGURATION SUPABASE ---------- */
+const SUPABASE_URL = 'https://TON-PROJET.supabase.co';
+const SUPABASE_ANON_KEY = 'TA_CLE_ANON';
+let supabase = null;
+
+if (typeof supabase !== 'undefined' && SUPABASE_URL !== 'https://TON-PROJET.supabase.co') {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
 /* ---------- SEED DATA (issu du Référentiel Excel) ---------- */
-const SEED_AGENTS = [{"matricule": "CN00455", "nom": "RASOAMALALA Tanjona Nomenahary", "n1": "FenoRANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "", "contact": "034 00 323 01", "login": "tanjona10", "mail": "tanjona.rasoamalala@connecteo.mg", "mailN1": "Fenohasiniaina.randrianarivelo@connecteo.mg", "anciennete": "3 ans 4 mois 24 jours", "hermes": 1117, "amdocs": ""}, {"matricule": "CN00213", "nom": "RAVONISON Hanitra Martina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "martina1", "contact": "034 00 310 46", "login": "martina1", "mail": "Martina.RAVONISON@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "7 ans 3 mois 17 jours", "hermes": 1031, "amdocs": ""}, {"matricule": "CN00518", "nom": "DILIMIZONY Ravaka Lalaina Francia", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "ravakala1", "contact": "034 00 323 35", "login": "ravakala1", "mail": "ravaka.dilimizony@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 1 mois 13 jours", "hermes": 1178, "amdocs": ""}, {"matricule": "CN00572", "nom": "RAKOTOARIMANANA Tahina Nomenjanahary", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "tahina18", "contact": "038 05 861 49", "login": "tahina18", "mail": "tahina.rakotoarimanana@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 6 mois 9 jours", "hermes": 1796, "amdocs": ""}, {"matricule": "CN00799", "nom": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "fanomezantsoaint", "contact": "038 00 100 51", "login": "fanomezantsoaint", "mail": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2024, "amdocs": ""}, {"matricule": "CN01314", "nom": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "fanomezana2", "contact": "038 00 100 78", "login": "hasiniaina10", "mail": "hasiniaina.randrianarivelo@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "0 ans 5 mois 2 jours", "hermes": 1526, "amdocs": ""}, {"matricule": "CN01014", "nom": "RANDRIARISOA Lucas Antonio", "n1": "RAVONISON Hanitra Martina", "session": "lucaint", "contact": "038 07 569 75", "login": "lucasint ", "mail": "lucas.randriarisoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1554, "amdocs": "lucas.randriarisoa.ext@mvola.mg"}, {"matricule": "CN00750", "nom": "RATRIMONIAINA Anjasoa Fiderana", "n1": "RAVONISON Hanitra Martina", "session": "Anjasoa1\n", "contact": "038 33 405 81", "login": "Anjasoa1", "mail": "anjasoa.ratrimoniaina@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "2 ans 5 mois 20 jours", "hermes": 1453, "amdocs": "anjasoa.ratrimoniaina.ext@mvola.mg"}, {"matricule": "CN01013", "nom": "BETKOU Giselin Mac Francky", "n1": "RAVONISON Hanitra Martina", "session": "macint", "contact": "034 65 090 87", "login": "macint", "mail": "mac.betkou@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1628, "amdocs": "mac.betkou.ext@mvola.mg"}, {"matricule": "CN00780", "nom": "RAZANAMANITRA Onitiana Tahiriniaina", "n1": "RAVONISON Hanitra Martina", "session": "onitiana,raza", "contact": "038 09 979 34", "login": "onitianatint", "mail": "onitiana.razanamanitra@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "2 ans 9 mois 2 jours", "hermes": 1331, "amdocs": "onitiana.razanamanitra.ext@mvola.mg"}, {"matricule": "CN01207", "nom": "RAMANITRARIVO Miandrisoa Ony Fanantenana Kessia", "n1": "RAVONISON Hanitra Martina", "session": "onyint3", "contact": "038 27 998 85", "login": "onyint3", "mail": "ony.ramanitrarivo@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 3 mois 3 jours", "hermes": 2086, "amdocs": "ony.ramanitrarivo.ext@mvola.mg"}, {"matricule": "CN01212", "nom": "ANJANIRINA Elisabeth Valencia", "n1": "RAVONISON Hanitra Martina", "session": "elisabeth", "contact": "038 08 378 26", "login": "elisabeth", "mail": "elisabeth.anjanirina@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 3 mois 17 jours", "hermes": 2087, "amdocs": "elisabeth.anjanirina.ext@mvola.mg"}, {"matricule": "CN01228", "nom": "RABIAZA Rovaniaina Patrick", "n1": "RAVONISON Hanitra Martina", "session": "rovaint", "contact": "038 57 350 62", "login": "rovaint1", "mail": "rovaniaina.rabiaza@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 8 mois 0 jours", "hermes": 1762, "amdocs": "#N/A"}, {"matricule": "CN01216", "nom": "RAZAFIARIVELO Heliravaka Ornella", "n1": "RAVONISON Hanitra Martina", "session": "helivavaka", "contact": "034 01 627 76", "login": "helivavaka", "mail": "helivavaka.razafiarivelo@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 2 mois 13 jours", "hermes": 2082, "amdocs": "helivavaka.razafiarivelo.ext@mvola.mg"}, {"matricule": "CN01232", "nom": "RABEARISOA Hasina Fifaliana", "n1": "RAVONISON Hanitra Martina", "session": "hasina.rabearisoa", "contact": "383392162", "login": "hasinaint1", "mail": "hasina,rabearisoa@connecteo,mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 11 mois 18 jours", "hermes": 1441, "amdocs": "#N/A"}, {"matricule": "CN01220", "nom": "RAKOTOMALALA Rick Bryan", "n1": "RAVONISON Hanitra Martina", "session": "rickbryan", "contact": "038 21 252 28", "login": "rickbryan", "mail": "Rick.rakotomalala@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1640, "amdocs": "rick.rakotomalala.ext@mvola.mg"}, {"matricule": "CI02296", "nom": "RATAHINJANAHARY Hasiniaina Ricah", "n1": "RAVONISON Hanitra Martina", "session": "ricah", "contact": "384748401", "login": "hasiniainaint1", "mail": "ricah.ratahinjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 2059, "amdocs": "ricah.ratahinjanahary.ext@mvola.mg"}, {"matricule": "CI02294", "nom": "RANDRIAMANANTSOA Andry Nantenaina", "n1": "RAVONISON Hanitra Martina", "session": "Andry.randriama", "contact": "341473683", "login": "Andryint", "mail": "andry.randriamanantsoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1940, "amdocs": "andry.randriamanantsoa.ext@mvola.mg"}, {"matricule": "CI02293", "nom": "RANDRIANOMENJANAHARY Debora", "n1": "RAVONISON Hanitra Martina", "session": "deboraint", "contact": "342795411", "login": "deboraint", "mail": "debora.randrianomenjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1952, "amdocs": "debora.randrianomenjanahary.ext@mvola.mg"}, {"matricule": "CI02298", "nom": "RANDRIAMIRADO Vetso Nirina Patricia", "n1": "RAVONISON Hanitra Martina", "session": "vetso.randriamirado", "contact": "386209313", "login": "Vetso", "mail": "vetso.randriamirado@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 2055, "amdocs": "vetso.randriamirado.ext@mvola.mg"}, {"matricule": "CN00816", "nom": "RAKOTOMALALA Ravoniaina Eulalie", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "ravoniainaint", "contact": "038 09 412 79", "login": "ravoniainaint", "mail": "ravoniaina.rakotomalala@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 2 mois 4 jours", "hermes": 1511, "amdocs": "ravoniaina.rakotomalala.ext@mvola.mg"}, {"matricule": "CN00991", "nom": "RAJAONARISON Ionja Nantenaina", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "ionjaint", "contact": "038 62 172 82", "login": "ionjaint", "mail": "ionja.rajaonarison@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1509, "amdocs": "ionja.rajaonarison.ext@mvola.mg"}, {"matricule": "CN00812", "nom": "RASOAMANANJARA Napoina Jessica", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "napoinaint", "contact": "034 51 784 37", "login": "napoinaint", "mail": "napoina.rasoamananjara@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 21 jours", "hermes": 2010, "amdocs": "napoina.rasoamananjara.ext@mvola.mg"}, {"matricule": "CN01211", "nom": "RAZAFINDRATSARA Hantatiana Adrienne", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "Congé de maternité ", "contact": "034 34 802 42", "login": "hantatianaint", "mail": "hantatiana,razafindratsara@connecteo,mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1626, "amdocs": "#N/A"}, {"matricule": "CN00784", "nom": "RAKOTOARISOA Zoliniaina El-Voary", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "rakotoarisoa1", "contact": "038 61 919 73", "login": "rakotoarisoa1", "mail": "zoliniaina.rakotoarisoa@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2014, "amdocs": "zoliniaina.rakotoarisoa.ext@mvola.mg"}, {"matricule": "CN01208", "nom": "RAKOTOARIMANANA Verohanitra", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "Verohanitraint", "contact": "034 04 764 56", "login": "verohanitraint", "mail": "verohanitra.rakotoarimanana@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2051, "amdocs": "verohanitra.rakotoarimanana.ext@mvola.mg"}, {"matricule": "CN00992", "nom": "DAKALO Edwardo", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "edwardoint", "contact": "038 72 732 55", "login": "Edwardo", "mail": "edwardo.dakalo@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1470, "amdocs": "edwardo.dakalo.ext@mvola.mg"}, {"matricule": "CN01218", "nom": "RAKOTOARIMALALA Kanto Nantenaina Finaritra Marinah", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "finaritraint1", "contact": "034 01 106 39", "login": "finaritraint1", "mail": "finaritra.rakoatoarimalala@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2056, "amdocs": "finaritra.rakoatoarimalala.ext@mvola.mg"}, {"matricule": "CI02188", "nom": "ANDRIANAVALONA Fenitra Malala", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "fenitramalala", "contact": "038 18 483 95", "login": "fenitramalala", "mail": "Fenitra.andrianavalona@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1140, "amdocs": "fenitra.andrianavalona.ext@mvola.mg"}, {"matricule": "CN00997", "nom": "RALAIVOAVY Andrianiaina Fandresena", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "andriniainaint", "contact": "034 67 140 95", "login": "andriniainaint", "mail": "andriniiaina,ralaivoavy@connecteo,mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1637, "amdocs": "#N/A"}, {"matricule": "CN00996", "nom": "RAJAONA Anjamalala Stephenson Lydia", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "stephensonint ", "contact": "034 94 685 12", "login": "stephensonint", "mail": "stephenson.rajaona@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 8 mois 7 jours", "hermes": 1135, "amdocs": "stephenson.rajaona.ext@mvola.mg"}, {"matricule": "CI01975", "nom": "RANDRIARIMANANA Fredo Mahery", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "fredoint", "contact": "038 43 66017", "login": "fredoint", "mail": "fredo.randriarimanana@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 8 mois 6 jours", "hermes": 1686, "amdocs": "fredo.randriarimanana.ext@mvola.mg"}, {"matricule": "CI02301", "nom": "RABEFARIHY Dina Herizo", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "dina.rabefarihy", "contact": "382883206", "login": "DinaInt", "mail": "Dina.rabefarihy@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1890, "amdocs": "dina.rabefarihy.ext@mvola.mg"}, {"matricule": "CN01213", "nom": "RAMAMBASON Olivia Nirina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "oliviaint", "contact": "034 18 122 46", "login": "oliviaint", "mail": "olivia.ramambason@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2053, "amdocs": "olivia.ramambason.ext@mvola.mg"}, {"matricule": "CN01214", "nom": "RAZAFIMAHATRATRA Faniriniaina Zoliana", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "zolianaint", "contact": "038 27 796 91", "login": "zolianaint", "mail": "zoliana.razafimahatratra@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 2 mois 13 jours", "hermes": 2078, "amdocs": "zoliana.razafimahatratra.ext@mvola.mg"}, {"matricule": "CI02230", "nom": "RAZAFINDRALANDY Erica Josephson", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "josephsonint", "contact": "038 78 370 98", "login": "josephsonint", "mail": "josephson.razafindralandy@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1488, "amdocs": "josephson.razafindralandy.ext@mvola.mg"}, {"matricule": "CN01219", "nom": "RAJONAH Vololoniony Hasinavalona", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "hasinavalonaint", "contact": "038 76 105 10", "login": "hasinavalonaint", "mail": "hasinavalona.rajonah@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 3 mois 15 jours", "hermes": 2083, "amdocs": "hasinavalona.rajonah.ext@mvola.mg"}, {"matricule": "CI02191", "nom": "RAMIANDRINANDRASANA Nico Christiano", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "nicochristiano", "contact": "038 71 563 45", "login": "nicochristiano", "mail": "Nico.ramiandrinandrasana@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1497, "amdocs": "nico.ramiandrinandrasana.ext@mvola.mg"}, {"matricule": "CN01221", "nom": "ORIMBATOSOA Rindra Antenaina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "rindraint", "contact": "034 76 076 80", "login": "rindraint", "mail": "rindra.orimbatosoa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1332, "amdocs": "rindra.orimbatosoa.ext@mvola.mg"}, {"matricule": "CN01225", "nom": "ROGER AÏCHA Jovanika", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "Aicha", "contact": "383197869", "login": "aicha", "mail": "aicha.roger@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1903, "amdocs": "aicha.roger.ext@mvola.mg"}, {"matricule": "CN01229", "nom": "RANDRIANALY Mario Kantoniaina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "marioint", "contact": "038 05 181 61", "login": "marioint", "mail": "Akantoniaina.randrianaly@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 8 mois 0 jours", "hermes": 1735, "amdocs": "#N/A"}, {"matricule": "CI02231", "nom": "RAFALIMANANA Falisoa Olivia", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "falisoa.RAFALIMANANA", "contact": "381499808", "login": "falisoaint", "mail": "falisoa.rafalimanana@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1329, "amdocs": "falisoa.rafalimanana.ext@mvola.mg"}, {"matricule": "CI02300", "nom": "DIMBINIAINA Barthelemy", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "barthelemyint", "contact": "388079287", "login": "Barthelemy", "mail": "barthelemy.dimbiniaina@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1891, "amdocs": "barthelemy.dimbiniaina.ext@mvola.mg"}, {"matricule": "CN00567", "nom": "RASOARIMALALA Vololonirina Santatra Ny Ho Avy Safidy", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "vololonirina", "contact": "038 45 091 03", "login": "volonirina", "mail": "Volonirina.RASOARIMALALA@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "4 ans 9 mois 6 jours", "hermes": 1549, "amdocs": "volonirina.rasoarimalala.ext@mvola.mg"}, {"matricule": "CN01226", "nom": "RAMAROLAHY Rojoniaina Noella", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "        Noella ", "contact": "347458018", "login": "noella", "mail": "noella.ramarolahy@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1188, "amdocs": "noella.ramarolahy.ext@mvola.mg"}, {"matricule": "CN01224", "nom": "RAHARIMALALA Maminiaina Danielle", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "maminiaina11", "contact": "342873350", "login": "maminiaina11", "mail": "Maminiaina.raharimalala@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1504, "amdocs": "maminiaina.raharimalala.ext@mvola.mg"}, {"matricule": "CN01223", "nom": "RASOARIMBOLA Sarindrasoa Eulalie", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "sarindrasoa", "contact": "383751616", "login": "sarindrasoa", "mail": "Sarindrasoa.rassoarimbola@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 2016, "amdocs": "sarindrasoa.rassoarimbola.ext@mvola.mg"}, {"matricule": "CN00566", "nom": "RAFARASOA Fanomezana Albertine", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fanomezana5", "contact": "034 46 274 63", "login": "Fanomezana5", "mail": "fanomezana.RAFARASOA@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "4 ans 9 mois 14 jours", "hermes": 1540, "amdocs": "fanomezana.rafarasoa.ext@mvola.mg"}, {"matricule": "CN00352", "nom": "RAVOLALAINA Laurencia", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "laurencia2", "contact": "034 12 623 15", "login": "laurencia2", "mail": "Ravo.RAVOLALAINA@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "4 ans 8 mois 23 jours", "hermes": 1190, "amdocs": "ravo.ravolalaina.ext@mvola.mg"}, {"matricule": "CN00792", "nom": "RAZAFINDRAVAO Clémentine", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "clementine.razafindr", "contact": "038 39 390 75", "login": "razafindravao", "mail": "clementine.razafindravao@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 10 mois 24 jours", "hermes": 1788, "amdocs": "clementine.razafindravao.ext@mvola.mg"}, {"matricule": "CI02229", "nom": "RAZAFINIAINA Lantosoa Marguerite", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "marguerite.RAZAFINIA", "contact": "038 12 697 46", "login": "margueriteint", "mail": "marguerite.razafiniaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1448, "amdocs": "marguerite.razafiniaina.ext@mvola.mg"}, {"matricule": "CN01231", "nom": "RANDRIANALAHATRA Lahiniriko Luther", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "lahiniriko.ranndriana", "contact": "381907201", "login": "lahinirikoint2", "mail": "lahiniriko.randrianalahatra@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 10 mois 14 jours", "hermes": 1704, "amdocs": "lahiniriko.randrianalahatra.ext@mvola.mg"}, {"matricule": "CN00751", "nom": "HERIMAMPIONONA Tahiry Rovaniaina Larissa", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "tahiry13", "contact": "034 85 418 05", "login": "tahiry13", "mail": "tahiry.herimampionona@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "3 ans 3 mois 27 jours", "hermes": 1055, "amdocs": "tahiry.herimampionona.ext@mvola.mg"}, {"matricule": "CN00779", "nom": "HERINIAINA Fenomampionona Mbolatiana", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fenoint", "contact": "034 23 647 37", "login": "fenoint", "mail": "feno.heriniaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 4 mois 29 jours", "hermes": 1288, "amdocs": "feno.heriniaina.ext@mvola.mg"}, {"matricule": "CN00819", "nom": "RAKOTONONENJANAHARY Sahoby Manitra", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "sahobyint", "contact": "034 36 500 17", "login": "sahobyint", "mail": "sahoby.rakotonomenjanahary@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 3 mois 3 jours", "hermes": 1505, "amdocs": "sahoby.rakotonomenjanahary.ext@mvola.mg"}, {"matricule": "CN00573", "nom": "VITA Faniry", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "faniry.vita", "contact": "034 06 243 43", "login": "faniry23", "mail": "faniry.vita@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "3 ans 4 mois 2 jours", "hermes": 1539, "amdocs": "faniry.vita.ext@mvola.mg"}, {"matricule": "CN00757", "nom": "RANDRIAMBAO Fidinirina Miharisoa", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fidinirinaint", "contact": "038 95 006 91", "login": "fidinirinaint", "mail": "fidinirina.randriambao@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2012, "amdocs": "fidinirina.randriambao.ext@mvola.mg"}, {"matricule": "CI02299", "nom": "MAMITIANA Nico Mario", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "Nico", "contact": "382129053", "login": "Nico", "mail": "nico.mamitiana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1907, "amdocs": "nico.mamitiana.ext@mvola.mg"}, {"matricule": "CN00755", "nom": "BARIJAONA MERANTIANA Estelle Odette", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "estelleint", "contact": "034 04 566 36", "login": "estelleint", "mail": "estelle.barijaona@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 21 jours", "hermes": 2003, "amdocs": "estelle.barijaona.ext@mvola.mg"}, {"matricule": "CN01230", "nom": "FARASOA ANDRIALIHAJA Victoria", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "victoriaint", "contact": "038 98 004 79", "login": "victoriaint1", "mail": "victoria.andriamihaja@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "1 ans 2 mois 6 jours", "hermes": 1771, "amdocs": "#N/A"}, {"matricule": "CI02260", "nom": "MIANDRIARILALA Vicky Sandrice José Nithomi", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "sandriceint", "contact": "038 65 66 02", "login": "sandriceint", "mail": "vicky.mandriarilala@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 11 mois 7 jours", "hermes": 1938, "amdocs": "vicky.mandriarilala.ext@mvola.mg"}, {"matricule": "CI02423", "nom": "TSIARO NY NOFY VOARY NIRAINA", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Voaryint23", "contact": "038 95 842 36", "login": "voaryint1", "mail": "voary.tsiaro@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 2114, "amdocs": "voary.tsiaro.ext@mvola.mg"}, {"matricule": "CI02213", "nom": "RAFARAMANANA Tiavina Aimée Kézia", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "kezia", "contact": "038 26 422 95", "login": "aimee2", "mail": "Tiavina.RAFARAMANANA@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "1 ans 0 mois 7 jours", "hermes": 1493, "amdocs": "tiavina.rafaramanana.ext@mvola.mg"}, {"matricule": "CI02425", "nom": "RATOLOJANAHARY Nina Marie", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "à créer", "contact": "038 94 039 75", "login": "ninaint", "mail": "nina.ratolojanahary@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1098, "amdocs": "nina.ratolojanahary.ext@mvola.mg"}, {"matricule": "CI02426", "nom": "RAKOTOMAHEFA Mirantomalala", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Mirantoint26", "contact": "038 42 948 53", "login": "mirantint", "mail": "miranto.rakotomahefa@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1259, "amdocs": "miranto.rakotomahefa.ext@mvola.mg"}, {"matricule": "CI02427", "nom": "ANJARATIANA Princy", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Princyint", "contact": "038 48 573 58", "login": "princyint", "mail": "princy.anjaratiana@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1321, "amdocs": "princy.anjaratiana.ext@mvola.mg"}, {"matricule": "CI02643", "nom": "NOMENJANAHARY Sombiniaina Nirisoa Fanniah", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Nirisoa.nomenja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1492, "amdocs": "A créer"}, {"matricule": "CI02644", "nom": "RAZAFINDRAZAIAHARISOA Holiniaina Natacha", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Natacha.razafindra", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2061, "amdocs": "A créer"}, {"matricule": "CI02646", "nom": "TAHIANJANAHARY Sabrina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Sabrina.tahianja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2058, "amdocs": "A créer"}, {"matricule": "CI02647", "nom": "NOMENJANAHARY Tanjoniaina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Tanjoniaina.nomenja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1056, "amdocs": "A créer"}, {"matricule": "CI02648", "nom": "RAHARINOMENJANAHARY Fitiavana Josea", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Fitiavana.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1473, "amdocs": "A créer"}, {"matricule": "CI02649", "nom": "HARIMALALA Fanou Raissa", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Raissa.harima", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1494, "amdocs": "A créer"}, {"matricule": "CI02650", "nom": "RAHARIVOLOLONA Voahirana Tojonirina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Voahirana.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1447, "amdocs": "A créer"}, {"matricule": "CI02651", "nom": "RAHARINIRIANA Voahirana Niaina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Niaina.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2079, "amdocs": "A créer"}]
+const SEED_AGENTS = [{"matricule": "CN00455", "nom": "RASOAMALALA Tanjona Nomenahary", "n1": "FenoRANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "", "contact": "034 00 323 01", "login": "tanjona10", "mail": "tanjona.rasoamalala@connecteo.mg", "mailN1": "Fenohasiniaina.randrianarivelo@connecteo.mg", "anciennete": "3 ans 4 mois 24 jours", "hermes": 1117, "amdocs": ""}, {"matricule": "CN00213", "nom": "RAVONISON Hanitra Martina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "martina1", "contact": "034 00 310 46", "login": "martina1", "mail": "Martina.RAVONISON@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "7 ans 3 mois 17 jours", "hermes": 1031, "amdocs": ""}, {"matricule": "CN00518", "nom": "DILIMIZONY Ravaka Lalaina Francia", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "ravakala1", "contact": "034 00 323 35", "login": "ravakala1", "mail": "ravaka.dilimizony@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 1 mois 13 jours", "hermes": 1178, "amdocs": ""}, {"matricule": "CN00572", "nom": "RAKOTOARIMANANA Tahina Nomenjanahary", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "tahina18", "contact": "038 05 861 49", "login": "tahina18", "mail": "tahina.rakotoarimanana@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 6 mois 9 jours", "hermes": 1796, "amdocs": ""}, {"matricule": "CN00799", "nom": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "fanomezantsoaint", "contact": "038 00 100 51", "login": "fanomezantsoaint", "mail": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2024, "amdocs": ""}, {"matricule": "CN01314", "nom": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "fanomezana2", "contact": "038 00 100 78", "login": "hasiniaina10", "mail": "hasiniaina.randrianarivelo@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "0 ans 5 mois 2 jours", "hermes": 1526, "amdocs": ""}, {"matricule": "CN01014", "nom": "RANDRIARISOA Lucas Antonio", "n1": "RAVONISON Hanitra Martina", "session": "lucaint", "contact": "038 07 569 75", "login": "lucasint ", "mail": "lucas.randriarisoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1554, "amdocs": "lucas.randriarisoa.ext@mvola.mg"}, {"matricule": "CN00750", "nom": "RATRIMONIAINA Anjasoa Fiderana", "n1": "RAVONISON Hanitra Martina", "session": "Anjasoa1\n", "contact": "038 33 405 81", "login": "Anjasoa1", "mail": "anjasoa.ratrimoniaina@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "2 ans 5 mois 20 jours", "hermes": 1453, "amdocs": "anjasoa.ratrimoniaina.ext@mvola.mg"}, {"matricule": "CN01013", "nom": "BETKOU Giselin Mac Francky", "n1": "RAVONISON Hanitra Martina", "session": "macint", "contact": "034 65 090 87", "login": "macint", "mail": "mac.betkou@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1628, "amdocs": "mac.betkou.ext@mvola.mg"}, {"matricule": "CN00780", "nom": "RAZANAMANITRA Onitiana Tahiriniaina", "n1": "RAVONISON Hanitra Martina", "session": "onitiana,raza", "contact": "038 09 979 34", "login": "onitianatint", "mail": "onitiana.razanamanitra@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "2 ans 9 mois 2 jours", "hermes": 1331, "amdocs": "onitiana.razanamanitra.ext@mvola.mg"}, {"matricule": "CN01207", "nom": "RAMANITRARIVO Miandrisoa Ony Fanantenana Kessia", "n1": "RAVONISON Hanitra Martina", "session": "onyint3", "contact": "038 27 998 85", "login": "onyint3", "mail": "ony.ramanitrarivo@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 3 mois 3 jours", "hermes": 2086, "amdocs": "ony.ramanitrarivo.ext@mvola.mg"}, {"matricule": "CN01212", "nom": "ANJANIRINA Elisabeth Valencia", "n1": "RAVONISON Hanitra Martina", "session": "elisabeth", "contact": "038 08 378 26", "login": "elisabeth", "mail": "elisabeth.anjanirina@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 3 mois 17 jours", "hermes": 2087, "amdocs": "elisabeth.anjanirina.ext@mvola.mg"}, {"matricule": "CN01228", "nom": "RABIAZA Rovaniaina Patrick", "n1": "RAVONISON Hanitra Martina", "session": "rovaint", "contact": "038 57 350 62", "login": "rovaint1", "mail": "rovaniaina.rabiaza@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 8 mois 0 jours", "hermes": 1762, "amdocs": "#N/A"}, {"matricule": "CN01216", "nom": "RAZAFIARIVELO Heliravaka Ornella", "n1": "RAVONISON Hanitra Martina", "session": "helivavaka", "contact": "034 01 627 76", "login": "helivavaka", "mail": "helivavaka.razafiarivelo@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 2 mois 13 jours", "hermes": 2082, "amdocs": "helivavaka.razafiarivelo.ext@mvola.mg"}, {"matricule": "CN01232", "nom": "RABEARISOA Hasina Fifaliana", "n1": "RAVONISON Hanitra Martina", "session": "hasina.rabearisoa", "contact": "383392162", "login": "hasinaint1", "mail": "hasina,rabearisoa@connecteo,mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 11 mois 18 jours", "hermes": 1441, "amdocs": "#N/A"}, {"matricule": "CN01220", "nom": "RAKOTOMALALA Rick Bryan", "n1": "RAVONISON Hanitra Martina", "session": "rickbryan", "contact": "038 21 252 28", "login": "rickbryan", "mail": "Rick.rakotomalala@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1640, "amdocs": "rick.rakotomalala.ext@mvola.mg"}, {"matricule": "CI02296", "nom": "RATAHINJANAHARY Hasiniaina Ricah", "n1": "RAVONISON Hanitra Martina", "session": "ricah", "contact": "384748401", "login": "hasiniainaint1", "mail": "ricah.ratahinjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 2059, "amdocs": "ricah.ratahinjanahary.ext@mvola.mg"}, {"matricule": "CI02294", "nom": "RANDRIAMANANTSOA Andry Nantenaina", "n1": "RAVONISON Hanitra Martina", "session": "Andry.randriama", "contact": "341473683", "login": "Andryint", "mail": "andry.randriamanantsoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1940, "amdocs": "andry.randriamanantsoa.ext@mvola.mg"}, {"matricule": "CI02293", "nom": "RANDRIANOMENJANAHARY Debora", "n1": "RAVONISON Hanitra Martina", "session": "deboraint", "contact": "342795411", "login": "deboraint", "mail": "debora.randrianomenjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1952, "amdocs": "debora.randrianomenjanahary.ext@mvola.mg"}, {"matricule": "CI02298", "nom": "RANDRIAMIRADO Vetso Nirina Patricia", "n1": "RAVONISON Hanitra Martina", "session": "vetso.randriamirado", "contact": "386209313", "login": "Vetso", "mail": "vetso.randriamirado@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 2055, "amdocs": "vetso.randriamirado.ext@mvola.mg"}, {"matricule": "CN00816", "nom": "RAKOTOMALALA Ravoniaina Eulalie", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "ravoniainaint", "contact": "038 09 412 79", "login": "ravoniainaint", "mail": "ravoniaina.rakotomalala@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 2 mois 4 jours", "hermes": 1511, "amdocs": "ravoniaina.rakotomalala.ext@mvola.mg"}, {"matricule": "CN00991", "nom": "RAJAONARISON Ionja Nantenaina", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "ionjaint", "contact": "038 62 172 82", "login": "ionjaint", "mail": "ionja.rajaonarison@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1509, "amdocs": "ionja.rajaonarison.ext@mvola.mg"}, {"matricule": "CN00812", "nom": "RASOAMANANJARA Napoina Jessica", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "napoinaint", "contact": "034 51 784 37", "login": "napoinaint", "mail": "napoina.rasoamananjara@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 21 jours", "hermes": 2010, "amdocs": "napoina.rasoamananjara.ext@mvola.mg"}, {"matricule": "CN01211", "nom": "RAZAFINDRATSARA Hantatiana Adrienne", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "Congé de maternité ", "contact": "034 34 802 42", "login": "hantatianaint", "mail": "hantatiana,razafindratsara@connecteo,mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1626, "amdocs": "#N/A"}, {"matricule": "CN00784", "nom": "RAKOTOARISOA Zoliniaina El-Voary", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "rakotoarisoa1", "contact": "038 61 919 73", "login": "rakotoarisoa1", "mail": "zoliniaina.rakotoarisoa@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2014, "amdocs": "zoliniaina.rakotoarisoa.ext@mvola.mg"}, {"matricule": "CN01208", "nom": "RAKOTOARIMANANA Verohanitra", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "Verohanitraint", "contact": "034 04 764 56", "login": "verohanitraint", "mail": "verohanitra.rakotoarimanana@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2051, "amdocs": "verohanitra.rakotoarimanana.ext@mvola.mg"}, {"matricule": "CN00992", "nom": "DAKALO Edwardo", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "edwardoint", "contact": "038 72 732 55", "login": "Edwardo", "mail": "edwardo.dakalo@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 11 mois 4 jours", "hermes": 1470, "amdocs": "edwardo.dakalo.ext@mvola.mg"}, {"matricule": "CN01218", "nom": "RAKOTOARIMALALA Kanto Nantenaina Finaritra Marinah", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "finaritraint1", "contact": "034 01 106 39", "login": "finaritraint1", "mail": "finaritra.rakoatoarimalala@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2056, "amdocs": "finaritra.rakoatoarimalala.ext@mvola.mg"}, {"matricule": "CI02188", "nom": "ANDRIANAVALONA Fenitra Malala", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "fenitramalala", "contact": "038 18 483 95", "login": "fenitramalala", "mail": "Fenitra.andrianavalona@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1140, "amdocs": "fenitra.andrianavalona.ext@mvola.mg"}, {"matricule": "CN00997", "nom": "RALAIVOAVY Andrianiaina Fandresena", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "andriniainaint", "contact": "034 67 140 95", "login": "andriniainaint", "mail": "andriniiaina,ralaivoavy@connecteo,mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 9 mois 15 jours", "hermes": 1637, "amdocs": "#N/A"}, {"matricule": "CN00996", "nom": "RAJAONA Anjamalala Stephenson Lydia", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "stephensonint ", "contact": "034 94 685 12", "login": "stephensonint", "mail": "stephenson.rajaona@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 8 mois 7 jours", "hermes": 1135, "amdocs": "stephenson.rajaona.ext@mvola.mg"}, {"matricule": "CI01975", "nom": "RANDRIARIMANANA Fredo Mahery", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "fredoint", "contact": "038 43 66017", "login": "fredoint", "mail": "fredo.randriarimanana@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "1 ans 8 mois 6 jours", "hermes": 1686, "amdocs": "fredo.randriarimanana.ext@mvola.mg"}, {"matricule": "CI02301", "nom": "RABEFARIHY Dina Herizo", "n1": "DILIMIZONY Ravaka Lalaina Francia", "session": "dina.rabefarihy", "contact": "382883206", "login": "DinaInt", "mail": "Dina.rabefarihy@connecteo.mg", "mailN1": "ravoniaina.rakotomalala@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1890, "amdocs": "dina.rabefarihy.ext@mvola.mg"}, {"matricule": "CN01213", "nom": "RAMAMBASON Olivia Nirina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "oliviaint", "contact": "034 18 122 46", "login": "oliviaint", "mail": "olivia.ramambason@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 3 mois 18 jours", "hermes": 2053, "amdocs": "olivia.ramambason.ext@mvola.mg"}, {"matricule": "CN01214", "nom": "RAZAFIMAHATRATRA Faniriniaina Zoliana", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "zolianaint", "contact": "038 27 796 91", "login": "zolianaint", "mail": "zoliana.razafimahatratra@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 2 mois 13 jours", "hermes": 2078, "amdocs": "zoliana.razafimahatratra.ext@mvola.mg"}, {"matricule": "CI02230", "nom": "RAZAFINDRALANDY Erica Josephson", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "josephsonint", "contact": "038 78 370 98", "login": "josephsonint", "mail": "josephson.razafindralandy@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1488, "amdocs": "josephson.razafindralandy.ext@mvola.mg"}, {"matricule": "CN01219", "nom": "RAJONAH Vololoniony Hasinavalona", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "hasinavalonaint", "contact": "038 76 105 10", "login": "hasinavalonaint", "mail": "hasinavalona.rajonah@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 3 mois 15 jours", "hermes": 2083, "amdocs": "hasinavalona.rajonah.ext@mvola.mg"}, {"matricule": "CI02191", "nom": "RAMIANDRINANDRASANA Nico Christiano", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "nicochristiano", "contact": "038 71 563 45", "login": "nicochristiano", "mail": "Nico.ramiandrinandrasana@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1497, "amdocs": "nico.ramiandrinandrasana.ext@mvola.mg"}, {"matricule": "CN01221", "nom": "ORIMBATOSOA Rindra Antenaina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "rindraint", "contact": "034 76 076 80", "login": "rindraint", "mail": "rindra.orimbatosoa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1332, "amdocs": "rindra.orimbatosoa.ext@mvola.mg"}, {"matricule": "CN01225", "nom": "ROGER AÏCHA Jovanika", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "Aicha", "contact": "383197869", "login": "aicha", "mail": "aicha.roger@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1903, "amdocs": "aicha.roger.ext@mvola.mg"}, {"matricule": "CN01229", "nom": "RANDRIANALY Mario Kantoniaina", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "marioint", "contact": "038 05 181 61", "login": "marioint", "mail": "Akantoniaina.randrianaly@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 8 mois 0 jours", "hermes": 1735, "amdocs": "#N/A"}, {"matricule": "CI02231", "nom": "RAFALIMANANA Falisoa Olivia", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "falisoa.RAFALIMANANA", "contact": "381499808", "login": "falisoaint", "mail": "falisoa.rafalimanana@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1329, "amdocs": "falisoa.rafalimanana.ext@mvola.mg"}, {"matricule": "CI02300", "nom": "DIMBINIAINA Barthelemy", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "barthelemyint", "contact": "388079287", "login": "Barthelemy", "mail": "barthelemy.dimbiniaina@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1891, "amdocs": "barthelemy.dimbiniaina.ext@mvola.mg"}, {"matricule": "CN00567", "nom": "RASOARIMALALA Vololonirina Santatra Ny Ho Avy Safidy", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "vololonirina", "contact": "038 45 091 03", "login": "volonirina", "mail": "Volonirina.RASOARIMALALA@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "4 ans 9 mois 6 jours", "hermes": 1549, "amdocs": "volonirina.rasoarimalala.ext@mvola.mg"}, {"matricule": "CN01226", "nom": "RAMAROLAHY Rojoniaina Noella", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "        Noella ", "contact": "347458018", "login": "noella", "mail": "noella.ramarolahy@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1188, "amdocs": "noella.ramarolahy.ext@mvola.mg"}, {"matricule": "CN01224", "nom": "RAHARIMALALA Maminiaina Danielle", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "session": "maminiaina11", "contact": "342873350", "login": "maminiaina11", "mail": "Maminiaina.raharimalala@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 1504, "amdocs": "maminiaina.raharimalala.ext@mvola.mg"}, {"matricule": "CN01223", "nom": "RASOARIMBOLA Sarindrasoa Eulalie", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "sarindrasoa", "contact": "383751616", "login": "sarindrasoa", "mail": "Sarindrasoa.rassoarimbola@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 0 mois 18 jours", "hermes": 2016, "amdocs": "sarindrasoa.rassoarimbola.ext@mvola.mg"}, {"matricule": "CN00566", "nom": "RAFARASOA Fanomezana Albertine", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fanomezana5", "contact": "034 46 274 63", "login": "Fanomezana5", "mail": "fanomezana.RAFARASOA@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "4 ans 9 mois 14 jours", "hermes": 1540, "amdocs": "fanomezana.rafarasoa.ext@mvola.mg"}, {"matricule": "CN00352", "nom": "RAVOLALAINA Laurencia", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "laurencia2", "contact": "034 12 623 15", "login": "laurencia2", "mail": "Ravo.RAVOLALAINA@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "4 ans 8 mois 23 jours", "hermes": 1190, "amdocs": "ravo.ravolalaina.ext@mvola.mg"}, {"matricule": "CN00792", "nom": "RAZAFINDRAVAO Clémentine", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "clementine.razafindr", "contact": "038 39 390 75", "login": "razafindravao", "mail": "clementine.razafindravao@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 10 mois 24 jours", "hermes": 1788, "amdocs": "clementine.razafindravao.ext@mvola.mg"}, {"matricule": "CI02229", "nom": "RAZAFINIAINA Lantosoa Marguerite", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "marguerite.RAZAFINIA", "contact": "038 12 697 46", "login": "margueriteint", "mail": "marguerite.razafiniaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "0 ans 11 mois 26 jours", "hermes": 1448, "amdocs": "marguerite.razafiniaina.ext@mvola.mg"}, {"matricule": "CN01231", "nom": "RANDRIANALAHATRA Lahiniriko Luther", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "lahiniriko.ranndriana", "contact": "381907201", "login": "lahinirikoint2", "mail": "lahiniriko.randrianalahatra@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "1 ans 10 mois 14 jours", "hermes": 1704, "amdocs": "lahiniriko.randrianalahatra.ext@mvola.mg"}, {"matricule": "CN00751", "nom": "HERIMAMPIONONA Tahiry Rovaniaina Larissa", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "tahiry13", "contact": "034 85 418 05", "login": "tahiry13", "mail": "tahiry.herimampionona@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "3 ans 3 mois 27 jours", "hermes": 1055, "amdocs": "tahiry.herimampionona.ext@mvola.mg"}, {"matricule": "CN00779", "nom": "HERINIAINA Fenomampionona Mbolatiana", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fenoint", "contact": "034 23 647 37", "login": "fenoint", "mail": "feno.heriniaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 4 mois 29 jours", "hermes": 1288, "amdocs": "feno.heriniaina.ext@mvola.mg"}, {"matricule": "CN00819", "nom": "RAKOTONONENJANAHARY Sahoby Manitra", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "sahobyint", "contact": "034 36 500 17", "login": "sahobyint", "mail": "sahoby.rakotonomenjanahary@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 3 mois 3 jours", "hermes": 1505, "amdocs": "sahoby.rakotonomenjanahary.ext@mvola.mg"}, {"matricule": "CN00573", "nom": "VITA Faniry", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "faniry.vita", "contact": "034 06 243 43", "login": "faniry23", "mail": "faniry.vita@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "3 ans 4 mois 2 jours", "hermes": 1539, "amdocs": "faniry.vita.ext@mvola.mg"}, {"matricule": "CN00757", "nom": "RANDRIAMBAO Fidinirina Miharisoa", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "fidinirinaint", "contact": "038 95 006 91", "login": "fidinirinaint", "mail": "fidinirina.randriambao@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2012, "amdocs": "fidinirina.randriambao.ext@mvola.mg"}, {"matricule": "CI02299", "nom": "MAMITIANA Nico Mario", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "Nico", "contact": "382129053", "login": "Nico", "mail": "nico.mamitiana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "0 ans 10 mois 10 jours", "hermes": 1907, "amdocs": "nico.mamitiana.ext@mvola.mg"}, {"matricule": "CN00755", "nom": "BARIJAONA MERANTIANA Estelle Odette", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "session": "estelleint", "contact": "034 04 566 36", "login": "estelleint", "mail": "estelle.barijaona@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "anciennete": "2 ans 7 mois 21 jours", "hermes": 2003, "amdocs": "estelle.barijaona.ext@mvola.mg"}, {"matricule": "CN01230", "nom": "FARASOA ANDRIALIHAJA Victoria", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "victoriaint", "contact": "038 98 004 79", "login": "victoriaint1", "mail": "victoria.andriamihaja@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "1 ans 2 mois 6 jours", "hermes": 1771, "amdocs": "#N/A"}, {"matricule": "CI02260", "nom": "MIANDRIARILALA Vicky Sandrice José Nithomi", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "sandriceint", "contact": "038 65 66 02", "login": "sandriceint", "mail": "vicky.mandriarilala@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 11 mois 7 jours", "hermes": 1938, "amdocs": "vicky.mandriarilala.ext@mvola.mg"}, {"matricule": "CI02423", "nom": "TSIARO NY NOFY VOARY NIRAINA", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Voaryint23", "contact": "038 95 842 36", "login": "voaryint1", "mail": "voary.tsiaro@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 2114, "amdocs": "voary.tsiaro.ext@mvola.mg"}, {"matricule": "CI02213", "nom": "RAFARAMANANA Tiavina Aimée Kézia", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "kezia", "contact": "038 26 422 95", "login": "aimee2", "mail": "Tiavina.RAFARAMANANA@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "1 ans 0 mois 7 jours", "hermes": 1493, "amdocs": "tiavina.rafaramanana.ext@mvola.mg"}, {"matricule": "CI02425", "nom": "RATOLOJANAHARY Nina Marie", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "à créer", "contact": "038 94 039 75", "login": "ninaint", "mail": "nina.ratolojanahary@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1098, "amdocs": "nina.ratolojanahary.ext@mvola.mg"}, {"matricule": "CI02426", "nom": "RAKOTOMAHEFA Mirantomalala", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Mirantoint26", "contact": "038 42 948 53", "login": "mirantint", "mail": "miranto.rakotomahefa@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1259, "amdocs": "miranto.rakotomahefa.ext@mvola.mg"}, {"matricule": "CI02427", "nom": "ANJARATIANA Princy", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Princyint", "contact": "038 48 573 58", "login": "princyint", "mail": "princy.anjaratiana@connecteo.mg", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 4 mois 9 jours", "hermes": 1321, "amdocs": "princy.anjaratiana.ext@mvola.mg"}, {"matricule": "CI02643", "nom": "NOMENJANAHARY Sombiniaina Nirisoa Fanniah", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Nirisoa.nomenja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1492, "amdocs": "A créer"}, {"matricule": "CI02644", "nom": "RAZAFINDRAZAIAHARISOA Holiniaina Natacha", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Natacha.razafindra", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2061, "amdocs": "A créer"}, {"matricule": "CI02646", "nom": "TAHIANJANAHARY Sabrina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Sabrina.tahianja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2058, "amdocs": "A créer"}, {"matricule": "CI02647", "nom": "NOMENJANAHARY Tanjoniaina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Tanjoniaina.nomenja", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1056, "amdocs": "A créer"}, {"matricule": "CI02648", "nom": "RAHARINOMENJANAHARY Fitiavana Josea", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Fitiavana.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1473, "amdocs": "A créer"}, {"matricule": "CI02649", "nom": "HARIMALALA Fanou Raissa", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Raissa.harima", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1494, "amdocs": "A créer"}, {"matricule": "CI02650", "nom": "RAHARIVOLOLONA Voahirana Tojonirina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Voahirana.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 1447, "amdocs": "A créer"}, {"matricule": "CI02651", "nom": "RAHARINIRIANA Voahirana Niaina", "n1": "RANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "Niaina.rahari", "contact": "", "login": "", "mail": "", "mailN1": "hasiniaina.randrianarivelo@connecteo.mg", "anciennete": "0 ans 0 mois 19 jours", "hermes": 2079, "amdocs": "A créer"}]
 ;
 
 const SEED_TOOLS = [
@@ -409,17 +420,44 @@ let state = {
   historyAgent: null,
   newReqSelected: [], // matricules
   newReqTool: null,
+  lastGeneratedRequest: null
 };
 
 /* ---------- STORAGE HELPERS ---------- */
 async function storageGet(key, fallback){
+  if (supabase) {
+    try {
+      const { data, error } = await supabase.from('app_data').select('value').eq('key', key).single();
+      if (data && !error) return JSON.parse(data.value);
+    } catch(e) {
+      console.warn('Supabase fetch failed, fallback to local', key, e);
+    }
+  }
   try{
-    const r = await window.storage.get(key, false);
-    return r ? JSON.parse(r.value) : fallback;
+    if (window.storage && window.storage.get) {
+      const r = await window.storage.get(key, false);
+      return r ? JSON.parse(r.value) : fallback;
+    }
+    const localVal = localStorage.getItem(key);
+    return localVal ? JSON.parse(localVal) : fallback;
   }catch(e){ return fallback; }
 }
+
 async function storageSet(key, value){
-  try{ await window.storage.set(key, JSON.stringify(value), false); }catch(e){ console.error('storage set failed', key, e); }
+  if (supabase) {
+    try {
+      await supabase.from('app_data').upsert({ key: key, value: JSON.stringify(value) });
+    } catch(e) {
+      console.error('Supabase set failed', key, e);
+    }
+  }
+  try{ 
+    if (window.storage && window.storage.set) {
+      await window.storage.set(key, JSON.stringify(value), false); 
+    } else {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  }catch(e){ console.error('storage set failed', key, e); }
 }
 
 async function loadAll(){
@@ -484,6 +522,19 @@ function expiringPasswords(){
     const st = pwStatus(x.ligne.dateModifMdp);
     return {...x, st};
   }).filter(x=> x.st.cls==='pw-orange' || x.st.cls==='pw-red');
+}
+
+/* ---------- MODAL UTILS ---------- */
+function openModal(contentHtml, wide=false){
+  const overlay = document.getElementById('modal-overlay');
+  const modal = document.getElementById('modal');
+  modal.className = 'modal' + (wide ? ' wide' : '');
+  modal.innerHTML = contentHtml;
+  overlay.classList.add('show');
+  modal.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', closeModal));
+}
+function closeModal(){
+  document.getElementById('modal-overlay').classList.remove('show');
 }
 
 /* ---------- ROUTER / NAV ---------- */
@@ -607,10 +658,6 @@ function stubGrid(reqs){
 
 function stubCard(r){
   const t = toolById(r.toolId);
-  const cls = !r.ticketId ? 'stub-amber' : (r.statut==='termine' ? 'stub-teal' : '');
-  const stubClass = !r.ticketId ? '' : (r.statut==='termine'?'stub-teal':'');
-  let borderClass = !r.ticketId ? '' : (r.statut==='termine' ? 'stub-teal' : 'stub-red');
-  // use amber (default) if pending ticket, teal if termine, else keep amber for en_cours w/o override
   let extra = '';
   if(!r.ticketId) extra='';
   else if(r.statut==='termine') extra='stub-teal';
@@ -937,6 +984,7 @@ function viewTickets(){
 
 function openRequestModal(reqId){
   const req = state.requests.find(r=>r.id===reqId);
+  if(!req) return;
   const t = toolById(req.toolId);
   let rows = req.lignes.map(l=>{
     const a = agentByMat(l.matricule)||{};
@@ -948,7 +996,7 @@ function openRequestModal(reqId){
   }).join('');
 
   const body = `
-    <div class="field"><label>Outil</label><input value="${esc(t.nom)}" disabled></div>
+    <div class="field"><label>Outil</label><input value="${esc(t?t.nom:'')}" disabled></div>
     <div class="form-grid">
       <div class="field"><label>ID Ticket IT</label><input id="req-ticket" value="${esc(req.ticketId||'')}" placeholder="ex: RITM0068828 / REQ0068848"></div>
       <div class="field"><label>Statut</label><select id="req-statut">
@@ -961,39 +1009,46 @@ function openRequestModal(reqId){
     <div class="table-wrap"><table><thead><tr><th>Matricule</th><th>Nom</th><th>Valeur(s)</th><th>Mot de passe</th><th>Modifié le</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table></div>
     <p class="field-hint" style="margin-top:8px;">L'ID de ticket saisi ci-dessus s'appliquera à l'ensemble des agents de ce lot.</p>
   `;
-  openModal(`<div class="modal-head"><h3>Demande — ${esc(t.nom)}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  openModal(`<div class="modal-head"><h3>Demande — ${esc(t?t.nom:'')}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="modal-body">${body}</div>
   <div class="modal-foot">
-    <button class="btn btn-ghost" data-copy-request="${req.id}">Copier le récap</button>
-    <button class="btn btn-red" id="del-request-btn">Supprimer</button>
-    <button class="btn btn-primary" id="save-request-btn">Enregistrer</button>
+    <button class="btn btn-red btn-sm" id="del-req-btn">Supprimer le lot</button>
+    <div class="spacer"></div>
+    <button class="btn btn-ghost" data-close>Annuler</button>
+    <button class="btn btn-primary" id="save-req-btn">Enregistrer</button>
   </div>`, true);
 
-  document.getElementById('save-request-btn').addEventListener('click', async ()=>{
-    req.ticketId = document.getElementById('req-ticket').value.trim();
-    req.statut = document.getElementById('req-statut').value;
-    req.commentaireGlobal = document.getElementById('req-comment').value.trim();
-    document.querySelectorAll('.rl-mdp').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.motDePasse = inp.value.trim();
-    });
-    document.querySelectorAll('.rl-date').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.dateModifMdp = inp.value;
-    });
-    document.querySelectorAll('.rl-comment').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.commentaire = inp.value.trim();
-    });
-    await persistRequests();
-    closeModal();
-    toast('Demande mise à jour');
-    switchView(state.view);
-  });
-  document.getElementById('del-request-btn').addEventListener('click', async ()=>{
-    if(!confirm('Supprimer définitivement cette demande ?')) return;
+  document.getElementById('del-req-btn').addEventListener('click', async ()=>{
+    if(!confirm('Voulez-vous supprimer définitivement ce lot de demandes ?')) return;
     state.requests = state.requests.filter(r=>r.id!==reqId);
     await persistRequests();
     closeModal();
-    toast('Demande supprimée');
-    switchView(state.view);
+    toast('Lot supprimé');
+    renderContent();
+  });
+
+  document.getElementById('save-req-btn').addEventListener('click', async ()=>{
+    req.ticketId = document.getElementById('req-ticket').value.trim();
+    req.statut = document.getElementById('req-statut').value;
+    req.commentaireGlobal = document.getElementById('req-comment').value.trim();
+
+    document.querySelectorAll('.rl-mdp').forEach(inp=>{
+      const l = req.lignes.find(x=>x.id===inp.dataset.ligne);
+      if(l) l.motDePasse = inp.value.trim();
+    });
+    document.querySelectorAll('.rl-date').forEach(inp=>{
+      const l = req.lignes.find(x=>x.id===inp.dataset.ligne);
+      if(l) l.dateModifMdp = inp.value;
+    });
+    document.querySelectorAll('.rl-comment').forEach(inp=>{
+      const l = req.lignes.find(x=>x.id===inp.dataset.ligne);
+      if(l) l.commentaire = inp.value.trim();
+    });
+
+    await persistRequests();
+    closeModal();
+    toast('Demande mise à jour');
+    renderContent();
   });
 }
 
@@ -1001,59 +1056,63 @@ function openRequestModal(reqId){
    VIEW: MOTS DE PASSE
    ========================================================= */
 function viewPasswords(){
-  let rows = allLignes().filter(x=> x.ligne.dateModifMdp || x.ligne.motDePasse);
-  const withStatus = rows.map(x=>({...x, st: pwStatus(x.ligne.dateModifMdp)}));
-  let filtered = withStatus;
-  if(state.pwFilter==='orange') filtered = withStatus.filter(x=>x.st.cls==='pw-orange');
-  else if(state.pwFilter==='red') filtered = withStatus.filter(x=>x.st.cls==='pw-red');
-  else if(state.pwFilter==='green') filtered = withStatus.filter(x=>x.st.cls==='pw-green');
-  filtered.sort((a,b)=> (a.st.days??999)-(b.st.days??999));
+  const all = allLignes().filter(x=> x.ligne.dateModifMdp);
+  let list = all.map(x=>({...x, st: pwStatus(x.ligne.dateModifMdp)}));
+
+  if(state.pwFilter==='expiring') list = list.filter(x=> x.st.cls==='pw-orange' || x.st.cls==='pw-red');
+  else if(state.pwFilter==='expired') list = list.filter(x=> x.st.cls==='pw-red');
+
+  list.sort((a,b)=>(a.st.days||0)-(b.st.days||0));
 
   let html = `<div class="toolbar">
     <select class="filter-select" id="pw-filter">
-      <option value="all" ${state.pwFilter==='all'?'selected':''}>Tous</option>
-      <option value="red" ${state.pwFilter==='red'?'selected':''}>🔴 Expirés</option>
-      <option value="orange" ${state.pwFilter==='orange'?'selected':''}>🟠 Expiration imminente (≤15j)</option>
-      <option value="green" ${state.pwFilter==='green'?'selected':''}>🟢 Valides</option>
+      <option value="all" ${state.pwFilter==='all'?'selected':''}>Tous les mots de passe suivis</option>
+      <option value="expiring" ${state.pwFilter==='expiring'?'selected':''}>À renouveler (≤15j ou expirés)</option>
+      <option value="expired" ${state.pwFilter==='expired'?'selected':''}>Expirés uniquement</option>
     </select>
-    <span class="count text-slate small">${filtered.length} mot(s) de passe suivi(s)</span>
+    <span class="count text-slate small">${list.length} entrée(s)</span>
   </div>`;
 
-  if(!filtered.length){ html += emptyState('Aucun mot de passe enregistré', "Renseignez un mot de passe depuis une demande pour le voir apparaître ici."); return html; }
+  if(!list.length){ html += emptyState('Aucun mot de passe enregistré', 'Les mots de passe saisis dans le suivi des tickets apparaîtront ici.'); return html; }
 
-  html += `<div class="table-wrap card"><table><thead><tr><th>Agent</th><th>Outil</th><th>Mot de passe</th><th>Modifié le</th><th>Expire le</th><th>Statut</th></tr></thead><tbody>`;
-  filtered.forEach(x=>{
-    const a = agentByMat(x.ligne.matricule)||{};
+  html += `<div class="table-wrap card"><table><thead><tr>
+    <th>Agent</th><th>Outil</th><th>Mot de passe</th><th>Modifié le</th><th>Expire le</th><th>Statut</th><th>Action rapide</th>
+  </tr></thead><tbody>`;
+  list.forEach(x=>{
+    const a = agentByMat(x.ligne.matricule);
     const t = toolById(x.req.toolId);
-    html += `<tr><td><b>${esc(a.nom||x.ligne.matricule)}</b><br><span class="small mono text-slate">${esc(x.ligne.matricule)}</span></td>
-      <td>${esc(t?t.nom:'')}</td><td class="mono">${esc(x.ligne.motDePasse||'—')}</td>
-      <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td><td class="mono">${x.st.exp?fmtDate(x.st.exp):'—'}</td>
-      <td><span class="pw-pill ${x.st.cls}"><span class="pw-dot"></span>${x.st.label}</span></td></tr>`;
+    html += `<tr>
+      <td><b>${esc(a?a.nom:x.ligne.matricule)}</b><br><span class="small text-slate mono">${esc(x.ligne.matricule)}</span></td>
+      <td>${esc(t?t.nom:'')}</td>
+      <td class="mono">${esc(x.ligne.motDePasse||'—')}</td>
+      <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td>
+      <td class="mono">${fmtDate(x.st.exp)}</td>
+      <td><span class="pw-pill ${x.st.cls}"><span class="pw-dot"></span>${x.st.label}</span></td>
+      <td><button class="btn btn-ghost btn-sm" data-reinit-pw="${x.req.id}|${x.ligne.id}">Réinitialiser aujourd'hui</button></td>
+    </tr>`;
   });
   html += `</tbody></table></div>`;
   return html;
 }
 
 /* =========================================================
-   VIEW: OUTILS
+   VIEW: OUTILS (Catalogue)
    ========================================================= */
 function viewTools(){
-  let html = `<div class="toolbar"><span class="count text-slate small">${state.tools.length} outil(s) référencé(s)</span><div class="spacer"></div>
-    <button class="btn btn-primary" data-action="new-tool"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un outil</button></div>`;
+  let html = `<div class="toolbar">
+    <span class="count text-slate small">${state.tools.length} outil(s) référencé(s)</span>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="add-tool-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un outil</button>
+  </div>`;
+
   html += `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
   state.tools.forEach(t=>{
-    const count = state.requests.filter(r=>r.toolId===t.id).length;
-    html += `<div class="card" style="padding:16px;">
-      <div class="flex items-center gap8" style="margin-bottom:8px;">
-        <div style="width:36px;height:36px;border-radius:10px;background:${t.couleur}22;display:flex;align-items:center;justify-content:center;">
-          <div style="width:14px;height:14px;border-radius:4px;background:${t.couleur};"></div>
-        </div>
-        <b>${esc(t.nom)}</b>
-      </div>
-      <div class="small text-slate" style="margin-bottom:8px;">Champs : ${t.champs.map(c=>esc(c.label)).join(', ')}</div>
-      <div class="flex items-center" style="justify-content:space-between;">
-        <span class="small text-slate">${count} demande(s)</span>
-        <button class="icon-btn danger" data-del-tool="${t.id}" title="Supprimer"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
+    html += `<div class="card" style="padding:18px;border-top:4px solid ${t.couleur||'var(--amber)'}">
+      <div style="font-weight:700;font-size:16px;margin-bottom:8px;">${esc(t.nom)}</div>
+      <div class="small text-slate" style="margin-bottom:12px;">Champs spécifiques : ${t.champs.map(c=>`<b>${esc(c.label)}</b>`).join(', ')}</div>
+      <div class="flex gap8">
+        <button class="btn btn-ghost btn-sm" data-edit-tool="${t.id}">Modifier</button>
+        <button class="btn btn-ghost btn-sm text-red" data-del-tool="${t.id}">Supprimer</button>
       </div>
     </div>`;
   });
@@ -1061,240 +1120,323 @@ function viewTools(){
   return html;
 }
 
-function openToolModal(){
-  openModal(`<div class="modal-head"><h3>Ajouter un outil</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
-  <div class="modal-body">
-    <div class="field"><label>Nom de l'outil *</label><input id="t-nom" placeholder="ex: VPN Agent"></div>
-    <div class="field"><label>Champ(s) de saisie (séparés par une virgule) *</label><input id="t-champs" placeholder="ex: Login VPN, Profil d'accès"></div>
-    <div class="field"><label>Couleur</label><input id="t-couleur" type="color" value="#4C6FFF" style="height:42px;padding:4px;"></div>
-    <label class="flex items-center gap8 small"><input type="checkbox" id="t-pwd" checked> Cet outil nécessite le suivi d'un mot de passe (expiration 90 jours)</label>
-  </div>
-  <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-tool-btn">Créer l'outil</button></div>`);
+function openToolModal(toolId){
+  const t = toolId ? toolById(toolId) : {id:uid(), nom:'', champs:[{key:'login',label:'Login'}]};
+  let champsHtml = (t.champs||[]).map((c,i)=>`
+    <div class="flex gap8 items-center tool-champ-row" style="margin-bottom:6px;">
+      <input class="tc-label" value="${esc(c.label)}" placeholder="Nom du champ (ex: Login S3)" style="flex:1;padding:7px 9px;border-radius:7px;border:1px solid var(--border);">
+      <button class="icon-btn danger del-tc-btn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+  `).join('');
+
+  const body = `
+    <div class="field"><label>Nom de l'outil *</label><input id="t-nom" value="${esc(t.nom)}" placeholder="ex: Application CRM"></div>
+    <div class="field"><label>Couleur d'identification</label><input type="color" id="t-couleur" value="${t.couleur||'#E8A33D'}" style="height:40px;padding:2px;"></div>
+    <div class="field"><label>Champs d'accès requis</label>
+      <div id="tc-container">${champsHtml}</div>
+      <button class="btn btn-ghost btn-sm" id="add-tc-btn" style="margin-top:6px;">+ Ajouter un champ</button>
+    </div>
+  `;
+
+  openModal(`<div class="modal-head"><h3>${toolId?'Modifier l\'outil':'Ajouter un outil'}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="modal-body">${body}</div>
+  <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-tool-btn">Enregistrer</button></div>`);
+
+  document.getElementById('add-tc-btn').addEventListener('click', ()=>{
+    const div = document.createElement('div');
+    div.className = 'flex gap8 items-center tool-champ-row';
+    div.style.marginBottom = '6px';
+    div.innerHTML = `<input class="tc-label" placeholder="Nom du champ" style="flex:1;padding:7px 9px;border-radius:7px;border:1px solid var(--border);">
+      <button class="icon-btn danger del-tc-btn"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`;
+    document.getElementById('tc-container').appendChild(div);
+    div.querySelector('.del-tc-btn').addEventListener('click', ()=> div.remove());
+  });
+
+  document.querySelectorAll('.del-tc-btn').forEach(b=> b.addEventListener('click', e=> e.target.closest('.tool-champ-row').remove()));
+
   document.getElementById('save-tool-btn').addEventListener('click', async ()=>{
     const nom = document.getElementById('t-nom').value.trim();
-    const champsRaw = document.getElementById('t-champs').value.trim();
-    if(!nom || !champsRaw){ toast('Nom et champs sont obligatoires', false); return; }
-    const champs = champsRaw.split(',').map(s=>s.trim()).filter(Boolean).map(label=>({key: label.toLowerCase().replace(/[^a-z0-9]+/g,'_').slice(0,20), label}));
-    const tool = {id: uid(), nom, couleur: document.getElementById('t-couleur').value, champs, gerePassword: document.getElementById('t-pwd').checked};
-    state.tools.push(tool);
+    if(!nom){ toast('Le nom de l\'outil est requis', false); return; }
+    const champs = [];
+    document.querySelectorAll('.tool-champ-row').forEach((row, i)=>{
+      const lbl = row.querySelector('.tc-label').value.trim();
+      if(lbl) champs.push({key: 'k'+i+'_'+lbl.toLowerCase().replace(/[^a-z0-9]/g,''), label: lbl});
+    });
+    if(!champs.length) champs.push({key:'login', label:'Login'});
+
+    const toolData = { id: t.id, nom, couleur: document.getElementById('t-couleur').value, champs, gerePassword: true };
+
+    if(toolId){
+      const idx = state.tools.findIndex(x=>x.id===toolId);
+      state.tools[idx] = toolData;
+    } else {
+      state.tools.push(toolData);
+    }
     await persistTools();
     closeModal();
-    toast('Outil ajouté au catalogue');
+    toast(toolId?'Outil mis à jour':'Outil ajouté');
     renderContent();
   });
 }
 
 /* =========================================================
-   VIEW: HISTORIQUE
+   VIEW: HISTORIQUE & ANALYSE CAUSE
    ========================================================= */
 function viewHistory(){
-  const termines = state.requests.filter(r=>r.statut==='termine').sort((a,b)=>new Date(b.dateCreation)-new Date(a.dateCreation));
-  let html = `<div class="section-title"><h2>Demandes finalisées</h2><span class="count">${termines.length}</span></div>`;
-  if(!termines.length){ html += emptyState('Aucune demande finalisée', "Les demandes passées en statut 'Terminé' apparaîtront ici."); }
-  else {
-    html += `<div class="table-wrap card" style="margin-bottom:24px;"><table><thead><tr><th>Date</th><th>Outil</th><th>Ticket</th><th>Agents</th><th></th></tr></thead><tbody>`;
-    termines.forEach(r=>{
-      const t = toolById(r.toolId);
-      html += `<tr><td class="mono small">${fmtDate(r.dateCreation)}</td><td>${esc(t?t.nom:'')}</td><td class="mono">${esc(r.ticketId||'—')}</td>
-        <td class="small">${r.lignes.map(l=>esc(l.matricule)).join(', ')}</td>
-        <td><button class="btn btn-ghost btn-sm" data-open-request="${r.id}">Voir</button></td></tr>`;
-    });
-    html += `</tbody></table></div>`;
-  }
+  const all = allLignes();
+  const agentsWithReqs = state.agents.map(a=>{
+    const reqs = all.filter(x=>x.ligne.matricule===a.matricule);
+    const agentCauses = reqs.filter(x=>x.ligne.causeType==='agent').length;
+    const outilCauses = reqs.filter(x=>x.ligne.causeType==='outil').length;
+    return { agent: a, total: reqs.length, agentCauses, outilCauses };
+  }).filter(x=> x.total > 0);
 
-  html += `<div class="section-title"><h2>Analyse de réitération par agent</h2></div>
-  <div class="card" style="padding:18px;">
-    <div class="field" style="max-width:400px;"><label>Sélectionner un agent</label>
-      <input id="hist-agent-search" placeholder="Rechercher un agent…" value="${state.historyAgent? esc((agentByMat(state.historyAgent)||{}).nom||''):''}">
-      <div id="hist-agent-results" style="position:relative;"></div>
-    </div>
-    <div id="hist-agent-detail"></div>
+  agentsWithReqs.sort((a,b)=> b.total - a.total);
+
+  let html = `<div class="toolbar">
+    <span class="count text-slate small">${agentsWithReqs.length} agent(s) ayant des demandes enregistrées</span>
   </div>`;
+
+  if(!agentsWithReqs.length){ html += emptyState('Aucun historique à analyser', 'Les réclamations et demandes créées apparaîtront ici.'); return html; }
+
+  html += `<div class="table-wrap card"><table><thead><tr>
+    <th>Agent</th><th>Nombre total de demandes</th><th>Cause Agent (erreur)</th><th>Cause Outil (panne/blocage)</th><th>Action</th>
+  </tr></thead><tbody>`;
+
+  agentsWithReqs.forEach(x=>{
+    html += `<tr>
+      <td><b>${esc(x.agent.nom)}</b><br><span class="small text-slate mono">${esc(x.agent.matricule)}</span></td>
+      <td><b>${x.total}</b> demande(s)</td>
+      <td><span class="text-amber font-weight:700">${x.agentCauses}</span></td>
+      <td><span class="text-red font-weight:700">${x.outilCauses}</span></td>
+      <td><button class="btn btn-ghost btn-sm" data-open-agent="${esc(x.agent.matricule)}">Voir le détail</button></td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>`;
   return html;
 }
 
-function renderHistoryAgentDetail(){
-  const box = document.getElementById('hist-agent-detail');
-  if(!box || !state.historyAgent) return;
-  const mat = state.historyAgent;
-  const a = agentByMat(mat);
-  const lignes = allLignes().filter(x=>x.ligne.matricule===mat);
-  const causeAgent = lignes.filter(x=>x.ligne.causeType==='agent').length;
-  const causeOutil = lignes.filter(x=>x.ligne.causeType==='outil').length;
-  const byTool = {};
-  lignes.forEach(x=>{ const t=toolById(x.req.toolId); byTool[t?t.nom:'—'] = (byTool[t?t.nom:'—']||0)+1; });
-  box.innerHTML = `<div class="cause-bars" style="margin-top:16px;">
-    <div class="cause-bar"><div class="cb-num">${lignes.length}</div><div class="cb-label">Total demandes — ${esc(a?a.nom:mat)}</div></div>
-    <div class="cause-bar"><div class="cb-num text-amber">${causeAgent}</div><div class="cb-label">Cause Agent</div></div>
-    <div class="cause-bar"><div class="cb-num text-red">${causeOutil}</div><div class="cb-label">Cause Outil</div></div>
-  </div>
-  <div class="small text-slate" style="margin-bottom:8px;">Répartition par outil : ${Object.entries(byTool).map(([k,v])=>`${esc(k)} (${v})`).join(' · ')||'—'}</div>
-  <button class="btn btn-ghost btn-sm" data-open-agent="${esc(mat)}">Ouvrir la fiche agent complète</button>`;
-}
-
 /* =========================================================
-   COPY RECAP TO CLIPBOARD (HTML table for email)
-   ========================================================= */
-async function copyRequestRecap(reqId){
-  const req = state.requests.find(r=>r.id===reqId);
-  const t = toolById(req.toolId);
-  const headers = ['Matricule','Nom & Prénom','Contact','Fonction','Login concerné','Mail N+1','Commentaire'];
-  const rows = req.lignes.map(l=>{
-    const a = agentByMat(l.matricule)||{};
-    const login = t.champs.map(c=>l.valeurs[c.key]).filter(Boolean).join(' / ') || '';
-    return [l.matricule, a.nom||'', a.contact||'', a.fonction||'', login, a.mailN1||'', l.commentaire||''];
-  });
-  const htmlTable = `<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px;">
-    <thead><tr>${headers.map(h=>`<th style="background:#12203D;color:#fff;text-align:left;">${esc(h)}</th>`).join('')}</tr></thead>
-    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-  const plainText = [headers.join('\t'), ...rows.map(r=>r.join('\t'))].join('\n');
-
-  try{
-    if(window.ClipboardItem){
-      const item = new ClipboardItem({
-        'text/html': new Blob([htmlTable], {type:'text/html'}),
-        'text/plain': new Blob([plainText], {type:'text/plain'}),
-      });
-      await navigator.clipboard.write([item]);
-    } else {
-      await navigator.clipboard.writeText(plainText);
-    }
-    toast('Tableau copié — collez-le dans votre email');
-  }catch(e){
-    try{ await navigator.clipboard.writeText(plainText); toast('Tableau copié (texte)'); }
-    catch(e2){ toast('Impossible de copier automatiquement', false); }
-  }
-}
-
-/* =========================================================
-   MODAL HELPERS
-   ========================================================= */
-function openModal(html, wide=false){
-  const overlay = document.getElementById('modal-overlay');
-  const modal = document.getElementById('modal');
-  modal.className = 'modal' + (wide?' wide':'');
-  modal.innerHTML = html;
-  overlay.classList.add('show');
-  modal.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', closeModal));
-}
-function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
-document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
-
-/* =========================================================
-   GLOBAL SEARCH
-   ========================================================= */
-function bindGlobalSearch(){
-  const input = document.getElementById('global-search');
-  const results = document.getElementById('search-results');
-  input.addEventListener('input', ()=>{
-    const f = input.value.trim().toLowerCase();
-    if(!f){ results.classList.remove('show'); return; }
-    const matches = state.agents.filter(a=> (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f)).slice(0,8);
-    if(!matches.length){ results.innerHTML = '<div class="sr-item">Aucun résultat</div>'; }
-    else results.innerHTML = matches.map(a=>`<div class="sr-item" data-goto="${esc(a.matricule)}"><div class="sr-name">${esc(a.nom)}</div><div class="sr-meta">${esc(a.matricule)} · ${esc(a.fonction||'')}</div></div>`).join('');
-    results.classList.add('show');
-    results.querySelectorAll('[data-goto]').forEach(el=>{
-      el.addEventListener('click', ()=>{ results.classList.remove('show'); input.value=''; openAgentDetail(el.dataset.goto); });
-    });
-  });
-  document.addEventListener('click', (e)=>{ if(!e.target.closest('.search-wrap')) results.classList.remove('show'); });
-}
-
-/* =========================================================
-   EVENT BINDING PER RENDER
+   EVENT BINDING
    ========================================================= */
 function bindContentEvents(){
-  document.querySelectorAll('[data-nav]').forEach(el=> el.addEventListener('click', ()=> switchView(el.dataset.nav)));
-  document.querySelectorAll('[data-open-agent]').forEach(el=> el.addEventListener('click', ()=> openAgentDetail(el.dataset.openAgent)));
-  document.querySelectorAll('[data-edit-agent]').forEach(el=> el.addEventListener('click', ()=> openAgentModal(el.dataset.editAgent)));
-  document.querySelectorAll('[data-del-agent]').forEach(el=> el.addEventListener('click', async ()=>{
-    if(!confirm('Supprimer cet agent du référentiel ?')) return;
-    state.agents = state.agents.filter(a=>a.matricule!==el.dataset.delAgent);
-    await persistAgents(); toast('Agent supprimé'); renderContent();
-  }));
-  const newAgentBtn = document.querySelector('[data-action="new-agent"]');
-  if(newAgentBtn) newAgentBtn.addEventListener('click', ()=> openAgentModal(null));
-
-  const agentFilterInput = document.getElementById('agent-filter-input');
-  if(agentFilterInput){
-    agentFilterInput.addEventListener('input', ()=>{ state.agentFilter = agentFilterInput.value; renderContent(); agentFilterInput.focus(); agentFilterInput.selectionStart = agentFilterInput.selectionEnd = agentFilterInput.value.length; });
-  }
-
-  document.querySelectorAll('[data-open-request]').forEach(el=> el.addEventListener('click', ()=> openRequestModal(el.dataset.openRequest)));
-  document.querySelectorAll('[data-copy-request]').forEach(el=> el.addEventListener('click', ()=> copyRequestRecap(el.dataset.copyRequest)));
-
-  const ticketFilter = document.getElementById('ticket-filter');
-  if(ticketFilter) ticketFilter.addEventListener('change', ()=>{ state.ticketFilter = ticketFilter.value; renderContent(); });
-  const ticketToolFilter = document.getElementById('ticket-tool-filter');
-  if(ticketToolFilter) ticketToolFilter.addEventListener('change', ()=>{ state.ticketToolFilter = ticketToolFilter.value; renderContent(); });
-  const pwFilter = document.getElementById('pw-filter');
-  if(pwFilter) pwFilter.addEventListener('change', ()=>{ state.pwFilter = pwFilter.value; renderContent(); });
-
-  const newToolBtn = document.querySelector('[data-action="new-tool"]');
-  if(newToolBtn) newToolBtn.addEventListener('click', openToolModal);
-  document.querySelectorAll('[data-del-tool]').forEach(el=> el.addEventListener('click', async ()=>{
-    if(!confirm('Supprimer cet outil du catalogue ?')) return;
-    state.tools = state.tools.filter(t=>t.id!==el.dataset.delTool);
-    await persistTools(); toast('Outil supprimé'); renderContent();
-  }));
-
-  /* New request view */
-  const nrTool = document.getElementById('nr-tool');
-  if(nrTool) nrTool.addEventListener('change', ()=>{ state.newReqTool = nrTool.value || null; state.newReqSelected=[]; state.lastGeneratedRequest=null; renderContent(); });
-  const apSearch = document.getElementById('ap-search');
-  if(apSearch){ renderApList(); apSearch.addEventListener('input', ()=> renderApList(apSearch.value)); }
-  renderSelectedChips();
-
-  const createBtn = document.getElementById('create-request-btn');
-  if(createBtn) createBtn.addEventListener('click', async ()=>{
-    const tool = toolById(state.newReqTool);
-    const globalComment = document.getElementById('nr-global-comment').value.trim();
-    const lignes = state.newReqSelected.map(mat=>{
-      const valeurs = {};
-      tool.champs.forEach(c=>{
-        const inp = document.querySelector(`.nr-champ[data-mat="${CSS.escape(mat)}"][data-key="${CSS.escape(c.key)}"]`);
-        valeurs[c.key] = inp ? inp.value.trim() : '';
-      });
-      const commentInp = document.querySelector(`.nr-comment[data-mat="${CSS.escape(mat)}"]`);
-      const commentaire = (commentInp?commentInp.value.trim():'') || globalComment;
-      return {id: uid(), matricule: mat, valeurs, commentaire, motDePasse:'', dateModifMdp:'', causeType:''};
-    });
-    const req = {id: uid(), toolId: tool.id, dateCreation: todayISO(), ticketId:'', statut:'attente_ticket', commentaireGlobal: globalComment, lignes};
-    state.requests.push(req);
-    await persistRequests();
-    state.lastGeneratedRequest = req;
-    toast('Demande créée — statut : en attente ID IT');
-    renderRail();
-    renderContent();
+  // Navigation links in banners
+  document.querySelectorAll('[data-nav]').forEach(b=>{
+    b.addEventListener('click', ()=> switchView(b.dataset.nav));
   });
 
-  /* history */
-  const histSearch = document.getElementById('hist-agent-search');
-  if(histSearch){
-    histSearch.addEventListener('input', ()=>{
-      const f = histSearch.value.trim().toLowerCase();
-      const box = document.getElementById('hist-agent-results');
-      if(!f){ box.innerHTML=''; return; }
-      const matches = state.agents.filter(a=>(a.nom||'').toLowerCase().includes(f)||(a.matricule||'').toLowerCase().includes(f)).slice(0,6);
-      box.innerHTML = `<div style="position:absolute;top:4px;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow);z-index:10;">` +
-        matches.map(a=>`<div class="sr-item" data-hist-goto="${esc(a.matricule)}"><div class="sr-name">${esc(a.nom)}</div><div class="sr-meta">${esc(a.matricule)}</div></div>`).join('') + `</div>`;
-      box.querySelectorAll('[data-hist-goto]').forEach(el=> el.addEventListener('click', ()=>{ state.historyAgent = el.dataset.histGoto; box.innerHTML=''; renderContent(); }));
+  // Copy recap
+  document.querySelectorAll('[data-copy-request]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const reqId = b.dataset.copy-request;
+      const tbl = document.getElementById(`recap-table-${reqId}`);
+      if(tbl){
+        const range = document.createRange();
+        range.selectNode(tbl);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        toast('Tableau copié dans le presse-papier !');
+      } else {
+        toast('Veuillez ouvrir le lot pour voir le tableau', false);
+      }
+    });
+  });
+
+  // Request modals
+  document.querySelectorAll('[data-open-request]').forEach(b=>{
+    b.addEventListener('click', ()=> openRequestModal(b.dataset.openRequest));
+  });
+
+  // Agent modals & details
+  document.querySelectorAll('[data-open-agent]').forEach(b=>{
+    b.addEventListener('click', ()=> openAgentDetail(b.dataset.openAgent));
+  });
+  document.querySelectorAll('[data-edit-agent]').forEach(b=>{
+    b.addEventListener('click', ()=> openAgentModal(b.dataset.editAgent));
+  });
+  document.querySelectorAll('[data-del-agent]').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      if(confirm('Supprimer cet agent du référentiel ?')){
+        state.agents = state.agents.filter(a=>a.matricule!==b.dataset.delAgent);
+        await persistAgents();
+        toast('Agent supprimé');
+        renderContent();
+      }
+    });
+  });
+
+  const btnNewAgent = document.querySelector('[data-action="new-agent"]');
+  if(btnNewAgent) btnNewAgent.addEventListener('click', ()=> openAgentModal());
+
+  // Agent Filter input
+  const agentFilterInput = document.getElementById('agent-filter-input');
+  if(agentFilterInput){
+    agentFilterInput.addEventListener('input', e=>{
+      state.agentFilter = e.target.value;
+      renderContent();
+      document.getElementById('agent-filter-input').focus();
     });
   }
-  if(state.historyAgent) renderHistoryAgentDetail();
+
+  // New Request Tool Select
+  const nrTool = document.getElementById('nr-tool');
+  if(nrTool){
+    nrTool.addEventListener('change', e=>{
+      state.newReqTool = e.target.value;
+      state.newReqSelected = [];
+      state.lastGeneratedRequest = null;
+      renderContent();
+    });
+  }
+
+  if(state.view==='newrequest' && state.newReqTool){
+    renderApList();
+    renderSelectedChips();
+
+    const apSearch = document.getElementById('ap-search');
+    if(apSearch) apSearch.addEventListener('input', e=> renderApList(e.target.value));
+
+    const createBtn = document.getElementById('create-request-btn');
+    if(createBtn){
+      createBtn.addEventListener('click', async ()=>{
+        const tool = toolById(state.newReqTool);
+        const globalComment = (document.getElementById('nr-global-comment')?.value||'').trim();
+
+        const lignes = state.newReqSelected.map(mat=>{
+          const valeurs = {};
+          tool.champs.forEach(c=>{
+            const inp = document.querySelector(`.nr-champ[data-mat="${mat}"][data-key="${c.key}"]`);
+            if(inp) valeurs[c.key] = inp.value.trim();
+          });
+          const commentInp = document.querySelector(`.nr-comment[data-mat="${mat}"]`);
+          const lineComment = commentInp ? commentInp.value.trim() : '';
+          const fullComment = [lineComment, globalComment].filter(Boolean).join(' — ');
+
+          return {
+            id: uid(),
+            matricule: mat,
+            valeurs,
+            commentaire: fullComment,
+            motDePasse: '',
+            dateModifMdp: '',
+            causeType: ''
+          };
+        });
+
+        const req = {
+          id: uid(),
+          toolId: tool.id,
+          dateCreation: todayISO(),
+          ticketId: '',
+          statut: 'en_cours',
+          commentaireGlobal: globalComment,
+          lignes
+        };
+
+        state.requests.unshift(req);
+        state.lastGeneratedRequest = req;
+        await persistRequests();
+        toast('Demande générée avec succès');
+        renderContent();
+      });
+    }
+  }
+
+  // Ticket Filters
+  const ticketFilter = document.getElementById('ticket-filter');
+  if(ticketFilter) ticketFilter.addEventListener('change', e=>{ state.ticketFilter = e.target.value; renderContent(); });
+
+  const ticketToolFilter = document.getElementById('ticket-tool-filter');
+  if(ticketToolFilter) ticketToolFilter.addEventListener('change', e=>{ state.ticketToolFilter = e.target.value; renderContent(); });
+
+  // Password Filter
+  const pwFilter = document.getElementById('pw-filter');
+  if(pwFilter) pwFilter.addEventListener('change', e=>{ state.pwFilter = e.target.value; renderContent(); });
+
+  // Reinit Password quick action
+  document.querySelectorAll('[data-reinit-pw]').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      const [reqId, ligneId] = b.dataset.reinitPw.split('|');
+      const req = state.requests.find(r=>r.id===reqId);
+      const l = req ? req.lignes.find(x=>x.id===ligneId) : null;
+      if(l){
+        l.dateModifMdp = todayISO();
+        await persistRequests();
+        toast('Mot de passe marqué réinitialisé aujourd\'hui');
+        renderContent();
+      }
+    });
+  });
+
+  // Tool management
+  const addToolBtn = document.getElementById('add-tool-btn');
+  if(addToolBtn) addToolBtn.addEventListener('click', ()=> openToolModal());
+
+  document.querySelectorAll('[data-edit-tool]').forEach(b=>{
+    b.addEventListener('click', ()=> openToolModal(b.dataset.editTool));
+  });
+  document.querySelectorAll('[data-del-tool]').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      if(confirm('Supprimer cet outil ?')){
+        state.tools = state.tools.filter(t=>t.id!==b.dataset.delTool);
+        await persistTools();
+        toast('Outil supprimé');
+        renderContent();
+      }
+    });
+  });
 }
 
-/* =========================================================
-   INIT
-   ========================================================= */
+/* ---------- GLOBAL SEARCH ---------- */
+function setupGlobalSearch(){
+  const inp = document.getElementById('global-search');
+  const res = document.getElementById('search-results');
+  if(!inp || !res) return;
+
+  inp.addEventListener('input', ()=>{
+    const q = inp.value.trim().toLowerCase();
+    if(!q){ res.classList.remove('show'); return; }
+
+    const matches = state.agents.filter(a=> (a.nom||'').toLowerCase().includes(q) || (a.matricule||'').toLowerCase().includes(q)).slice(0,8);
+
+    if(!matches.length){
+      res.innerHTML = `<div class="sr-item"><div class="sr-meta">Aucun résultat</div></div>`;
+    } else {
+      res.innerHTML = matches.map(a=>`
+        <div class="sr-item" data-search-mat="${esc(a.matricule)}">
+          <div class="sr-name">${esc(a.nom)}</div>
+          <div class="sr-meta">${esc(a.matricule)} · N+1: ${esc(a.n1||'—')}</div>
+        </div>
+      `).join('');
+
+      res.querySelectorAll('[data-search-mat]').forEach(el=>{
+        el.addEventListener('click', ()=>{
+          openAgentDetail(el.dataset.searchMat);
+          res.classList.remove('show');
+          inp.value = '';
+        });
+      });
+    }
+    res.classList.add('show');
+  });
+
+  document.addEventListener('click', e=>{
+    if(!inp.contains(e.target) && !res.contains(e.target)) res.classList.remove('show');
+  });
+}
+
+/* ---------- INIT APP ---------- */
 async function init(){
-  document.getElementById('content').innerHTML = `<div class="empty-state"><div class="es-title">Chargement…</div></div>`;
   await loadAll();
   renderRail();
   renderContent();
-  bindGlobalSearch();
+  setupGlobalSearch();
 }
-init();
+
+window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
