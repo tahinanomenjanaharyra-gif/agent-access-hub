@@ -386,93 +386,33 @@ const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIQUE_ICI";
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-<script>
-// Config Supabase
-const SUPABASE_URL = "https://xsfmgebptswezcpapmbj.supabase.co";
-
-// LIGNE 153 : COLLEZ VOTRE VRAIE CLÉ PUBLIQUE ENTRE LES GUILLEMETS CI-DESSOUS
-const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIQUE_ICI"; 
-
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Variable dynamique globale alimentée par Supabase
 let SEED_AGENTS = [];
 
-// Fonction qui génère l'affichage à l'écran
-function renderApp() {
-  const content = document.getElementById('content');
-  const rail = document.getElementById('rail');
-
-  rail.innerHTML = `
-    <div class="rail-logo">AH</div>
-    <button class="rail-btn active">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </button>
-  `;
-
-  if (!SEED_AGENTS || SEED_AGENTS.length === 0) {
-    content.innerHTML = `
-      <div class="empty-state">
-        <div style="font-weight:600; color:var(--slate-700); font-size:16px;">Aucune donnée trouvée</div>
-        <p>La table <b>Agents</b> dans Supabase est vide.</p>
-      </div>`;
-    return;
-  }
-
-  const keys = Object.keys(SEED_AGENTS[0]);
-
-  content.innerHTML = `
-    <div class="kpis">
-      <div class="kpi k-ink">
-        <div class="kpi-num">${SEED_AGENTS.length}</div>
-        <div class="kpi-label">Total Agents</div>
-      </div>
-    </div>
-    
-    <div class="card table-wrap">
-      <table>
-        <thead>
-          <tr>
-            ${keys.map(k => `<th>${k}</th>`).join('')}
-            <th>Statut</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${SEED_AGENTS.map(agent => `
-            <tr>
-              ${keys.map(k => `<td>${agent[k] !== null ? agent[k] : '-'}</td>`).join('')}
-              <td><span class="tag tag-teal">Actif</span></td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-  `;
-}
-
-// Interrogation de Supabase
+// Fonction pour récupérer les agents depuis la table Supabase
 async function fetchAgentsFromSupabase() {
-  const content = document.getElementById('content');
   try {
     const { data, error } = await supabase
-      .from('Agents')
+      .from('Agents') // Nom exact de votre table Supabase
       .select('*');
 
     if (error) {
-      console.error("Erreur Supabase :", error.message);
-      content.innerHTML = `<div style="color:var(--red); font-weight:600; padding:20px;">Erreur d'accès Supabase : ${error.message}</div>`;
+      console.error("Erreur de récupération Supabase :", error.message);
       return;
     }
 
-    SEED_AGENTS = data || [];
-    renderApp();
+    SEED_AGENTS = data;
+    console.log("Agents chargés avec succès depuis Supabase :", SEED_AGENTS);
     
   } catch (err) {
-    console.error("Erreur JS :", err);
-    content.innerHTML = `<div style="color:var(--red); font-weight:600; padding:20px;">Erreur de connexion : ${err.message}</div>`;
+    console.error("Erreur réseau ou JavaScript :", err);
   }
 }
 
-document.addEventListener('DOMContentLoaded', fetchAgentsFromSupabase);
+// Initialisation au chargement de la page
+document.addEventListener('DOMContentLoaded', () => {
+  fetchAgentsFromSupabase();
+});
 </script>
 </body>
 </html>
