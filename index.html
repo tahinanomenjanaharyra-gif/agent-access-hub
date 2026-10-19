@@ -102,7 +102,7 @@ input,select,textarea{font-family:inherit;}
 #topbar h1{font-size:19px;margin:0;font-weight:600;letter-spacing:-.2px;}
 #topbar .sub{color:var(--slate-500);font-size:13px;margin-top:1px;}
 .topbar-actions{margin-left:auto;display:flex;align-items:center;gap:10px;}
-.search-wrap{position:relative;width:260px;}
+.search-wrap{position:relative;width:240px;}
 .search-wrap input{
   width:100%;padding:10px 14px 10px 38px;border-radius:10px;border:1.5px solid var(--border);
   background:var(--paper);font-size:14px;outline:none;transition:.15s;
@@ -213,7 +213,7 @@ tbody tr:hover{background:#FAFBFD;}
 .empty-state svg{width:46px;height:46px;stroke:var(--slate-300);fill:none;stroke-width:1.4;margin-bottom:10px;}
 .empty-state .es-title{font-weight:600;color:var(--slate-700);font-size:14.5px;margin-bottom:3px;}
 
-/* FORMS */
+/* FORMS & MODAL */
 .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
 .field label{font-size:12.5px;font-weight:600;color:var(--slate-700);}
 .field input,.field select,.field textarea{
@@ -221,12 +221,8 @@ tbody tr:hover{background:#FAFBFD;}
   background:#fff;transition:.15s;width:100%;
 }
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber);}
-.field textarea{resize:vertical;min-height:64px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
-.form-grid .full{grid-column:1/-1;}
-.field-hint{font-size:11.5px;color:var(--slate-500);}
 
-/* MODAL */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(18,32,61,.45);backdrop-filter:blur(2px);
   display:none;align-items:flex-start;justify-content:center;z-index:100;padding:40px 20px;overflow:auto;
@@ -242,10 +238,8 @@ tbody tr:hover{background:#FAFBFD;}
 .modal-head h3{margin:0;font-size:17px;font-weight:600;}
 .modal-body{padding:22px 24px;max-height:65vh;overflow:auto;}
 .modal-foot{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
-.modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--paper);display:flex;align-items:center;justify-content:center;}
-.modal-close svg{width:16px;height:16px;stroke:var(--slate-700);}
+.modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 
-/* PASSWORD STATUS PILL */
 .pw-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;}
 .pw-dot{width:8px;height:8px;border-radius:50%;}
 .pw-green{background:#DCF3E9;color:var(--teal-deep);}.pw-green .pw-dot{background:var(--teal);}
@@ -253,40 +247,24 @@ tbody tr:hover{background:#FAFBFD;}
 .pw-red{background:#FBE1DF;color:var(--red-deep);}.pw-red .pw-dot{background:var(--red);}
 .pw-gray{background:#EAEDF4;color:var(--slate-700);}.pw-gray .pw-dot{background:var(--slate-300);}
 
-/* AGENT PICKER */
 .agent-picker{border:1.5px solid var(--border);border-radius:12px;padding:10px;max-height:260px;overflow:auto;}
-.ap-search{margin-bottom:8px;}
 .ap-row{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:8px;}
 .ap-row:hover{background:var(--paper);}
 .ap-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--amber);}
-.ap-name{font-weight:600;font-size:13px;}
-.ap-mat{font-size:11.5px;color:var(--slate-500);}
 .selected-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
 .selected-chips .chip{display:flex;align-items:center;gap:6px;background:#EAF3EE;border-color:#CFE7DA;}
-.selected-chips .chip button{border:none;background:none;color:var(--slate-500);font-size:14px;line-height:1;padding:0;}
+.selected-chips .chip button{border:none;background:none;color:var(--slate-500);font-size:14px;line-height:1;padding:0;cursor:pointer;}
 
-/* RECAP TABLE */
-.recap-table{width:100%;border-collapse:collapse;font-size:12.8px;}
-.recap-table th{background:var(--ink);color:#fff;padding:9px 10px;text-align:left;font-weight:600;}
-.recap-table td{padding:9px 10px;border-bottom:1px solid var(--border);}
-.recap-table tr:nth-child(even) td{background:#FAFBFD;}
-
-/* TOOLBAR */
 .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
 .toolbar .spacer{flex:1;}
-.filter-select{padding:9px 12px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:13px;font-weight:500;}
 .filter-search{position:relative;}
 .filter-search input{padding:9px 12px 9px 34px;border-radius:9px;border:1.5px solid var(--border);font-size:13px;width:220px;}
 .filter-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;stroke:var(--slate-500);fill:none;stroke-width:2;}
 
-/* BANNER ALERTS */
 .banner{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:18px;font-size:13.5px;font-weight:600;}
 .banner svg{width:20px;height:20px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;}
 .banner-amber{background:#FCEED9;color:var(--amber-deep);border:1px solid #F2D6A6;}
-.banner-red{background:#FBE1DF;color:var(--red-deep);border:1px solid #F3C2BE;}
-.banner a,.banner .link{text-decoration:underline;cursor:pointer;}
 
-/* TOAST */
 #toast{
   position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
   background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-size:13.5px;font-weight:600;
@@ -296,30 +274,6 @@ tbody tr:hover{background:#FAFBFD;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast svg{width:16px;height:16px;stroke:var(--teal);fill:none;stroke-width:2.4;}
 
-/* AGENT DETAIL */
-.agent-hero{display:flex;gap:16px;align-items:center;padding:20px;background:linear-gradient(135deg,var(--ink),var(--ink-2));border-radius:var(--radius);color:#fff;margin-bottom:20px;}
-.agent-avatar{width:56px;height:56px;border-radius:16px;background:var(--amber);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:20px;flex-shrink:0;}
-.agent-hero-info h2{margin:0 0 3px;font-size:18px;}
-.agent-hero-info div{font-size:12.8px;opacity:.85;}
-.cause-bars{display:flex;gap:16px;margin-bottom:16px;}
-.cause-bar{flex:1;background:#fff;border-radius:12px;border:1px solid var(--border);padding:16px;}
-.cause-bar .cb-num{font-family:'Space Grotesk';font-size:26px;font-weight:700;}
-.cause-bar .cb-label{font-size:12px;color:var(--slate-500);font-weight:600;margin-top:2px;}
-
-@media (max-width:980px){
-  .form-grid{grid-template-columns:1fr;}
-  .search-wrap{width:180px;}
-  .kpis{grid-template-columns:repeat(2,1fr);}
-}
-@media (max-width:700px){
-  :root{--rail-w:64px;}
-  .rail-btn{width:48px;font-size:9px;}
-  .rail-logo{width:36px;height:36px;font-size:15px;}
-  #content{padding:16px;}
-  .kpis{grid-template-columns:1fr;}
-  .search-wrap{display:none;}
-}
-.hidden{display:none !important;}
 .text-red{color:var(--red-deep);}
 .text-teal{color:var(--teal-deep);}
 .text-amber{color:var(--amber-deep);}
@@ -362,32 +316,32 @@ tbody tr:hover{background:#FAFBFD;}
 
 <script>
 /* SEED DATA */
-const SEED_AGENTS = [{"matricule": "CN00455", "nom": "RASOAMALALA Tanjona Nomenahary", "n1": "FenoRANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "", "contact": "034 00 323 01", "login": "tanjona10", "mail": "tanjona.rasoamalala@connecteo.mg", "mailN1": "Fenohasiniaina.randrianarivelo@connecteo.mg", "anciennete": "3 ans 4 mois 24 jours", "hermes": 1117, "amdocs": ""}, {"matricule": "CN00213", "nom": "RAVONISON Hanitra Martina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "martina1", "contact": "034 00 310 46", "login": "martina1", "mail": "Martina.RAVONISON@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "7 ans 3 mois 17 jours", "hermes": 1031, "amdocs": ""}, {"matricule": "CN00518", "nom": "DILIMIZONY Ravaka Lalaina Francia", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "ravakala1", "contact": "034 00 323 35", "login": "ravakala1", "mail": "ravaka.dilimizony@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 1 mois 13 jours", "hermes": 1178, "amdocs": ""}, {"matricule": "CN00572", "nom": "RAKOTOARIMANANA Tahina Nomenjanahary", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "tahina18", "contact": "038 05 861 49", "login": "tahina18", "mail": "tahina.rakotoarimanana@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "3 ans 6 mois 9 jours", "hermes": 1796, "amdocs": ""}, {"matricule": "CN00799", "nom": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "fanomezantsoaint", "contact": "038 00 100 51", "login": "fanomezantsoaint", "mail": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "2 ans 7 mois 14 jours", "hermes": 2024, "amdocs": ""}];
-const SEED_TOOLS = [
-  {id:'yas', nom:'Login YAS / IAS', couleur:'#4C6FFF', champs:[{key:'login',label:'Login YAS'}], gerePassword:true},
-  {id:'s3loan', nom:'Accès S3 / LOAN / Sentinel', couleur:'#8B5CF6', champs:[{key:'s3',label:'Accès S3'},{key:'sentinel',label:'Accès Sentinel'},{key:'loan',label:'Accès LOAN'},{key:'sentinel2',label:'Accès Sentinel V2/V3'},{key:'ogc',label:'Accès OGC'}], gerePassword:false},
-  {id:'mailcnto', nom:'Mail CNTO', couleur:'#D64545', champs:[{key:'mail',label:'Mail CNTO'}], gerePassword:true},
-  {id:'office365', nom:'Office 365', couleur:'#E8A33D', champs:[{key:'compte',label:'Compte Office 365'}], gerePassword:true},
-  {id:'session', nom:'Session Windows', couleur:'#1F9D6F', champs:[{key:'session',label:'Session Windows'}], gerePassword:true},
-  {id:'successcorner', nom:'Success Corner', couleur:'#0EA5B7', champs:[{key:'login',label:'Login Success Corner'}], gerePassword:true},
+const SEED_AGENTS = [
+  {"matricule": "CN00455", "nom": "RASOAMALALA Tanjona Nomenahary", "n1": "FenoRANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "", "contact": "034 00 323 01", "login": "tanjona10", "mail": "tanjona.rasoamalala@connecteo.mg"},
+  {"matricule": "CN00213", "nom": "RAVONISON Hanitra Martina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "martina1", "contact": "034 00 310 46", "login": "martina1", "mail": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00518", "nom": "DILIMIZONY Ravaka Lalaina Francia", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "ravakala1", "contact": "034 00 323 35", "login": "ravakala1", "mail": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN00572", "nom": "RAKOTOARIMANANA Tahina Nomenjanahary", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "tahina18", "contact": "038 05 861 49", "login": "tahina18", "mail": "tahina.rakotoarimanana@connecteo.mg"}
 ];
 
-/* STATE */
+const SEED_TOOLS = [
+  {id:'yas', nom:'Login YAS / IAS', couleur:'#4C6FFF', champs:[{key:'login',label:'Login YAS'}]},
+  {id:'s3loan', nom:'Accès S3 / LOAN / Sentinel', couleur:'#8B5CF6', champs:[{key:'s3',label:'Accès S3'},{key:'sentinel',label:'Accès Sentinel'}]},
+  {id:'mailcnto', nom:'Mail CNTO', couleur:'#D64545', champs:[{key:'mail',label:'Mail CNTO'}]},
+  {id:'office365', nom:'Office 365', couleur:'#E8A33D', champs:[{key:'compte',label:'Compte Office 365'}]},
+  {id:'session', nom:'Session Windows', couleur:'#1F9D6F', champs:[{key:'session',label:'Session Windows'}]}
+];
+
 let state = {
   agents: [],
   tools: [],
   requests: [],
   view: 'dashboard',
   agentFilter: '',
-  ticketFilter: 'all',
-  ticketToolFilter: 'all',
-  pwFilter: 'all',
   historyAgent: null,
   newReqSelected: [],
   newReqTool: null,
 };
 
-/* STORAGE VIA LOCALSTORAGE AVEC GESTION D'ERREURS ET EXPORT/IMPORT */
 function storageGet(key, fallback){
   try {
     const r = localStorage.getItem('hub_' + key);
@@ -395,9 +349,7 @@ function storageGet(key, fallback){
   } catch(e) { return fallback; }
 }
 function storageSet(key, value){
-  try {
-    localStorage.setItem('hub_' + key, JSON.stringify(value));
-  } catch(e) { console.error('storage set failed', key, e); }
+  try { localStorage.setItem('hub_' + key, JSON.stringify(value)); } catch(e){}
 }
 
 function loadAll(){
@@ -418,22 +370,13 @@ function persistAgents(){ storageSet('agents', state.agents); }
 function persistTools(){ storageSet('tools', state.tools); }
 function persistRequests(){ storageSet('requests', state.requests); }
 
-/* EXPORT ET IMPORT JSON */
 function exportDataJSON(){
-  const data = {
-    agents: state.agents,
-    tools: state.tools,
-    requests: state.requests,
-    exportDate: new Date().toISOString()
-  };
-  const jsonStr = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
+  const data = { agents: state.agents, tools: state.tools, requests: state.requests, exportDate: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = url;
+  a.href = URL.createObjectURL(blob);
   a.download = `agent-access-hub-backup-${new Date().toISOString().slice(0,10)}.json`;
   a.click();
-  URL.revokeObjectURL(url);
   toast('Sauvegarde téléchargée');
 }
 
@@ -446,109 +389,51 @@ function importDataJSON(file){
         state.agents = data.agents;
         state.tools = data.tools;
         state.requests = data.requests;
-        persistAgents();
-        persistTools();
-        persistRequests();
-        toast('Données restaurées avec succès');
-        renderRail();
-        renderContent();
-      } else {
-        toast('Fichier JSON invalide', false);
-      }
-    } catch(err) {
-      toast('Erreur lors de la lecture du fichier', false);
-    }
+        persistAgents(); persistTools(); persistRequests();
+        toast('Données restaurées');
+        renderRail(); renderContent();
+      } else { toast('Fichier JSON invalide', false); }
+    } catch(err) { toast('Erreur d\'importation', false); }
   };
   reader.readAsText(file);
 }
 
-/* UTILS */
 function uid(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); }
 function esc(s){ return (s===undefined||s===null) ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
-function fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso+'T00:00:00'); if(isNaN(d)) return iso; return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'}); }
-function daysFromToday(iso){ const d=new Date(iso+'T00:00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((d-t)/86400000); }
-function addDays(iso, n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
+function fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso+'T00:00:00'); return isNaN(d) ? iso : d.toLocaleDateString('fr-FR'); }
 function toolById(id){ return state.tools.find(t=>t.id===id); }
 function agentByMat(mat){ return state.agents.find(a=>a.matricule===mat); }
-function initials(nom){ if(!nom) return '?'; const parts=nom.trim().split(/\s+/); return ((parts[0]?.[0]||'')+(parts[1]?.[0]||'')).toUpperCase(); }
 
 function toast(msg, ok=true){
   const t=document.getElementById('toast');
-  t.innerHTML = (ok? '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : '') + '<span>'+esc(msg)+'</span>';
+  t.innerHTML = (ok? '✓ ' : '✕ ') + '<span>'+esc(msg)+'</span>';
   t.classList.add('show');
   clearTimeout(window._toastTimer);
   window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-function pwStatus(dateModif){
-  if(!dateModif) return {label:'Non renseigné', cls:'pw-gray', days:null};
-  const exp = addDays(dateModif, 90);
-  const left = daysFromToday(exp);
-  if(left < 0) return {label:'Expiré', cls:'pw-red', days:left, exp};
-  if(left <= 15) return {label: left+' j restants', cls:'pw-orange', days:left, exp};
-  return {label: left+' j restants', cls:'pw-green', days:left, exp};
-}
-
-function allLignes(){
-  const out=[];
-  state.requests.forEach(r=>{
-    (r.lignes||[]).forEach(l=>{ out.push({req:r, ligne:l}); });
-  });
-  return out;
-}
-
-function pendingTicketRequests(){ return state.requests.filter(r=> !r.ticketId && r.statut!=='termine'); }
-function expiringPasswords(){
-  return allLignes().filter(x=> x.ligne.dateModifMdp).map(x=>{
-    const st = pwStatus(x.ligne.dateModifMdp);
-    return {...x, st};
-  }).filter(x=> x.st.cls==='pw-orange' || x.st.cls==='pw-red');
-}
-
-/* NAV */
 const NAV = [
-  {id:'dashboard', label:'Accueil', icon:'M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z'},
-  {id:'agents', label:'Agents', icon:'M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z M22 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75'},
-  {id:'newrequest', label:'Nouvelle demande', icon:'M12 5v14M5 12h14'},
-  {id:'tickets', label:'Suivi tickets', icon:'M4 7h16M4 12h16M4 17h10'},
-  {id:'passwords', label:'Mots de passe', icon:'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zM8 11V7a4 4 0 118 0v4'},
-  {id:'tools', label:'Outils', icon:'M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z'},
-  {id:'history', label:'Historique', icon:'M3 3v5h5M3.05 13a9 9 0 106.16-8.63 M12 7v5l4 2'},
+  {id:'dashboard', label:'Accueil'},
+  {id:'agents', label:'Agents'},
+  {id:'newrequest', label:'Nouvelle demande'},
+  {id:'tickets', label:'Suivi tickets'},
+  {id:'passwords', label:'Mots de passe'},
+  {id:'tools', label:'Outils'},
+  {id:'history', label:'Historique'}
 ];
 
 function renderRail(){
   const rail = document.getElementById('rail');
-  const pendingCount = pendingTicketRequests().length;
-  const pwCount = expiringPasswords().length;
   rail.innerHTML = `<div class="rail-logo">AH</div>` +
-    NAV.map(n=>{
-      let badge='';
-      if(n.id==='tickets' && pendingCount>0) badge=`<span class="rail-badge">${pendingCount}</span>`;
-      if(n.id==='passwords' && pwCount>0) badge=`<span class="rail-badge">${pwCount}</span>`;
-      return `<button class="rail-btn ${state.view===n.id?'active':''}" data-nav="${n.id}">
-        <svg viewBox="0 0 24 24">${n.icon.split(' M').map((d,i)=>`<path d="${i===0?d:'M'+d}"/>`).join('')}</svg>
-        <span>${n.label}</span>${badge}
-      </button>`;
-    }).join('') + `<div class="rail-spacer"></div>`;
+    NAV.map(n=>`<button class="rail-btn ${state.view===n.id?'active':''}" data-nav="${n.id}"><span>${n.label}</span></button>`).join('') +
+    `<div class="rail-spacer"></div>`;
   rail.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=> switchView(b.dataset.nav)));
 }
 
-const TITLES = {
-  dashboard:['Tableau de bord',"Vue d'ensemble des accès et tickets"],
-  agents:['Référentiel agents','Base centrale des agents CNTO'],
-  newrequest:['Nouvelle demande','Créer une demande groupée pour un ou plusieurs agents'],
-  tickets:['Suivi des tickets IT','Demandes en cours, en attente d’ID et clôturées'],
-  passwords:['Mots de passe','Suivi des réinitialisations et expirations à 90 jours'],
-  tools:['Catalogue des outils','Gérer les outils et types d’accès disponibles'],
-  history:['Historique & analyse','Demandes finalisées et récurrence des réclamations'],
-};
-
-function switchView(view, opts={}){
+function switchView(view){
   state.view = view;
-  if(opts.historyAgent !== undefined) state.historyAgent = opts.historyAgent;
-  document.getElementById('view-title').textContent = TITLES[view][0];
-  document.getElementById('view-sub').textContent = TITLES[view][1];
+  document.getElementById('view-title').textContent = view.toUpperCase();
   renderRail();
   renderContent();
 }
@@ -565,323 +450,126 @@ function renderContent(){
   bindContentEvents();
 }
 
-/* VIEW DASHBOARD */
 function viewDashboard(){
-  const pending = pendingTicketRequests();
-  const pwExp = expiringPasswords();
-  const enCours = state.requests.filter(r=>r.statut==='en_cours').length;
-
-  let html = `<div class="kpis">
-    <div class="kpi k-amber"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
-      <div class="kpi-num">${pending.length}</div><div class="kpi-label">En attente d'ID ticket IT</div></div>
-    <div class="kpi k-red"><svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zM8 11V7a4 4 0 118 0v4"/></svg>
-      <div class="kpi-num">${pwExp.length}</div><div class="kpi-label">Mots de passe à surveiller (≤15j)</div></div>
-    <div class="kpi k-ink"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <div class="kpi-num">${enCours}</div><div class="kpi-label">Demandes en cours de traitement</div></div>
-    <div class="kpi k-teal"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
-      <div class="kpi-num">${state.agents.length}</div><div class="kpi-label">Agents référencés</div></div>
-  </div>`;
-
-  if(pending.length){
-    html += `<div class="banner banner-amber"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg>
-    <span>${pending.length} demande(s) sans numéro de ticket IT. <span class="link" data-nav="tickets">Voir le suivi →</span></span></div>`;
-  }
-
-  html += `<div class="section-title"><h2>Demandes en attente d'ID ticket</h2><span class="count">${pending.length} lot(s)</span></div>`;
-  html += stubGrid(pending.slice(0,6));
-  if(pending.length===0) html += emptyState('Aucune demande en attente', 'Toutes les demandes ont un numéro de ticket IT renseigné.');
-
-  return html;
-}
-
-function stubGrid(reqs){
-  if(!reqs.length) return '';
-  return `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr));margin-bottom:8px;">` +
-    reqs.map(r=> stubCard(r)).join('') + `</div>`;
-}
-
-function stubCard(r){
-  const t = toolById(r.toolId);
-  const tagHtml = !r.ticketId
-    ? `<span class="tag tag-amber">⏳ Sans ticket</span>`
-    : r.statut==='termine' ? `<span class="tag tag-teal">✓ Terminé</span>` : `<span class="tag tag-slate">🎫 ${esc(r.ticketId)}</span>`;
-  return `<div class="stub">
-    <div class="stub-head"><span class="stub-tool">${esc(t?t.nom:'Outil')}</span>${tagHtml}</div>
-    <div class="stub-body"><span><b>${r.lignes.length}</b> agent(s)</span><span>Créé le <b>${fmtDate(r.dateCreation)}</b></span></div>
-    <div class="stub-agents">${r.lignes.slice(0,5).map(l=>`<span class="chip">${esc((agentByMat(l.matricule)||{nom:l.matricule}).nom.split(' ')[0])} <span class="mono text-slate">${esc(l.matricule)}</span></span>`).join('')}${r.lignes.length>5?`<span class="chip">+${r.lignes.length-5}</span>`:''}</div>
-    <div class="stub-perf"></div>
-    <div class="stub-foot">
-      <button class="btn btn-ghost btn-sm" data-open-request="${r.id}">Ouvrir</button>
-      <button class="btn btn-amber btn-sm" data-copy-request="${r.id}">Copier le récap</button>
-    </div>
+  return `<div class="kpis">
+    <div class="kpi k-amber"><div class="kpi-num">${state.requests.filter(r=>!r.ticketId).length}</div><div class="kpi-label">Sans Ticket IT</div></div>
+    <div class="kpi k-teal"><div class="kpi-num">${state.agents.length}</div><div class="kpi-label">Agents référencés</div></div>
   </div>`;
 }
 
-function emptyState(title, sub){
-  return `<div class="card empty-state"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4M7 20h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-    <div class="es-title">${esc(title)}</div><div>${esc(sub)}</div></div>`;
-}
-
-/* VIEW AGENTS */
 function viewAgents(){
   let list = [...state.agents];
-  const f = state.agentFilter.trim().toLowerCase();
-  if(f) list = list.filter(a=> (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f));
-  list.sort((a,b)=> (a.nom||'').localeCompare(b.nom||''));
-
+  if(state.agentFilter) list = list.filter(a=> a.nom.toLowerCase().includes(state.agentFilter.toLowerCase()) || a.matricule.toLowerCase().includes(state.agentFilter.toLowerCase()));
+  
   let html = `<div class="toolbar">
-    <div class="filter-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="agent-filter-input" placeholder="Filtrer par nom, matricule…" value="${esc(state.agentFilter)}"></div>
-    <span class="count text-slate small">${list.length} agent(s)</span>
+    <div class="filter-search"><input id="agent-filter-input" placeholder="Filtrer..." value="${esc(state.agentFilter)}"></div>
     <div class="spacer"></div>
-    <button class="btn btn-primary" data-action="new-agent"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un agent</button>
+    <button class="btn btn-primary" id="btn-add-agent">+ Ajouter un agent</button>
   </div>`;
 
-  if(!list.length) return html + emptyState('Aucun agent trouvé', 'Ajustez votre recherche.');
-
-  html += `<div class="table-wrap card"><table><thead><tr>
-    <th>Agent</th><th>Matricule</th><th>N+1</th><th>Contact</th><th>Session</th><th>Login</th><th></th>
-  </tr></thead><tbody>`;
+  html += `<div class="table-wrap card"><table><thead><tr><th>Agent</th><th>Matricule</th><th>Contact</th><th>Actions</th></tr></thead><tbody>`;
   list.forEach(a=>{
-    html += `<tr>
-      <td><b>${esc(a.nom)}</b><br><span class="small text-slate">${esc(a.mail||'—')}</span></td>
-      <td class="mono">${esc(a.matricule)}</td>
-      <td class="small">${esc(a.n1||'—')}</td>
-      <td class="mono small">${esc(a.contact||'—')}</td>
-      <td class="mono small">${esc(a.session||'—')}</td>
-      <td class="mono small">${esc(a.login||'—')}</td>
-      <td><div class="flex gap8">
-        <button class="icon-btn" data-edit-agent="${esc(a.matricule)}"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
-        <button class="icon-btn danger" data-del-agent="${esc(a.matricule)}"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
-      </div></td>
-    </tr>`;
+    html += `<tr><td><b>${esc(a.nom)}</b></td><td class="mono">${esc(a.matricule)}</td><td>${esc(a.contact||'—')}</td>
+    <td>
+      <button class="icon-btn" data-edit-agent="${esc(a.matricule)}">✏️</button>
+      <button class="icon-btn danger" data-del-agent="${esc(a.matricule)}">🗑️</button>
+    </td></tr>`;
   });
-  html += `</tbody></table></div>`;
-  return html;
+  return html + `</tbody></table></div>`;
 }
 
-/* VIEW NOUVELLE DEMANDE */
-function viewNewRequest(){
-  const tool = state.newReqTool ? toolById(state.newReqTool) : null;
-  let html = `<div class="card" style="padding:22px;">
-    <div class="field"><label>1. Choisir l'outil / type d'accès concerné</label>
-      <select id="nr-tool" class="w-full">
-        <option value="">— Sélectionner un outil —</option>
-        ${state.tools.map(t=>`<option value="${t.id}" ${state.newReqTool===t.id?'selected':''}>${esc(t.nom)}</option>`).join('')}
-      </select>
-    </div>`;
+function agentFormFields(a={}){
+  return `<div class="form-grid">
+    <div class="field"><label>Matricule *</label><input id="f-matricule" value="${esc(a.matricule||'')}" ${a.matricule?'readonly style="background:var(--paper)"':''}></div>
+    <div class="field"><label>Nom & Prénoms *</label><input id="f-nom" value="${esc(a.nom||'')}"></div>
+    <div class="field"><label>N+1</label><input id="f-n1" value="${esc(a.n1||'')}"></div>
+    <div class="field"><label>Contact</label><input id="f-contact" value="${esc(a.contact||'')}"></div>
+    <div class="field"><label>Session Windows</label><input id="f-session" value="${esc(a.session||'')}"></div>
+    <div class="field"><label>Mail</label><input id="f-mail" value="${esc(a.mail||'')}"></div>
+  </div>`;
+}
 
-  if(tool){
-    html += `<div class="field"><label>2. Sélectionner un ou plusieurs agents</label>
-      <div class="agent-picker">
-        <div class="ap-search field" style="margin-bottom:8px;"><input id="ap-search" placeholder="Rechercher un agent…"></div>
-        <div id="ap-list"></div>
-      </div>
-      <div class="selected-chips" id="selected-chips"></div>
-    </div>`;
-
-    if(state.newReqSelected.length){
-      html += `<div class="field"><label>3. Renseigner les informations par agent</label></div>
-      <div class="table-wrap" style="margin-bottom:14px;"><table><thead><tr>
-        <th>Agent</th>${tool.champs.map(c=>`<th>${esc(c.label)}</th>`).join('')}<th>Commentaire</th>
-      </tr></thead><tbody>`;
-      state.newReqSelected.forEach(mat=>{
-        const a = agentByMat(mat);
-        html += `<tr><td><b>${esc(a?a.nom:mat)}</b><br><span class="small mono text-slate">${esc(mat)}</span></td>
-          ${tool.champs.map(c=>`<td><input class="nr-champ" data-mat="${esc(mat)}" data-key="${c.key}" placeholder="${esc(c.label)}" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td>`).join('')}
-          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
-      });
-      html += `</tbody></table></div>
-      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer la demande</button>`;
+function openAgentModal(matricule){
+  const a = matricule ? agentByMat(matricule) : {};
+  openModal(`
+    <div class="modal-head"><h3>${matricule?'Modifier l\'agent':'Ajouter un agent'}</h3><button class="modal-close" data-close>✕</button></div>
+    <div class="modal-body">${agentFormFields(a)}</div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-agent-btn">Enregistrer</button></div>
+  `);
+  document.getElementById('save-agent-btn').addEventListener('click', ()=>{
+    const matVal = document.getElementById('f-matricule').value.trim();
+    const nomVal = document.getElementById('f-nom').value.trim();
+    if(!matVal || !nomVal){ toast('Matricule et nom requis', false); return; }
+    
+    const data = {
+      matricule: matVal, id: matVal, nom: nomVal,
+      n1: document.getElementById('f-n1').value.trim(),
+      contact: document.getElementById('f-contact').value.trim(),
+      session: document.getElementById('f-session').value.trim(),
+      mail: document.getElementById('f-mail').value.trim()
+    };
+    
+    if(matricule){
+      const idx = state.agents.findIndex(x=>x.matricule===matricule);
+      if(idx!==-1) state.agents[idx] = data;
+    } else {
+      if(agentByMat(matVal)){ toast('Matricule existant', false); return; }
+      state.agents.push(data);
     }
-  }
-  return html + `</div>`;
-}
-
-function renderApList(filterText=''){
-  const box = document.getElementById('ap-list');
-  if(!box) return;
-  const f = filterText.trim().toLowerCase();
-  let list = state.agents.filter(a=> !f || (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f));
-  list.sort((a,b)=>(a.nom||'').localeCompare(b.nom||''));
-  box.innerHTML = list.slice(0,60).map(a=>`<label class="ap-row"><input type="checkbox" value="${esc(a.matricule)}" ${state.newReqSelected.includes(a.matricule)?'checked':''}>
-    <div><div class="ap-name">${esc(a.nom)}</div><div class="ap-mat">${esc(a.matricule)}</div></div></label>`).join('') || '<div class="small text-slate" style="padding:10px;">Aucun agent trouvé</div>';
-  box.querySelectorAll('input[type=checkbox]').forEach(cb=>{
-    cb.addEventListener('change', ()=>{
-      if(cb.checked) state.newReqSelected.push(cb.value);
-      else state.newReqSelected = state.newReqSelected.filter(m=>m!==cb.value);
-      renderContent();
-    });
+    persistAgents();
+    closeModal();
+    toast(matricule?'Mis à jour':'Agent créé');
+    renderContent();
   });
 }
 
-function renderSelectedChips(){
-  const box = document.getElementById('selected-chips');
-  if(!box) return;
-  box.innerHTML = state.newReqSelected.map(mat=>{
-    const a = agentByMat(mat);
-    return `<span class="chip">${esc(a?a.nom:mat)} <button data-unselect="${esc(mat)}">✕</button></span>`;
-  }).join('');
-  box.querySelectorAll('[data-unselect]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      state.newReqSelected = state.newReqSelected.filter(m=>m!==b.dataset.unselect);
-      renderContent();
-    });
-  });
+function viewNewRequest(){
+  return `<div class="card" style="padding:22px;">
+    <p>Création de demande d'accès pour les agents.</p>
+  </div>`;
 }
 
-/* VIEW TICKETS */
-function viewTickets(){
-  let list = [...state.requests];
-  list.sort((a,b)=> new Date(b.dateCreation)-new Date(a.dateCreation));
-  if(!list.length) return emptyState('Aucune demande', 'Créez une nouvelle demande.');
-  let html = `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(360px,1fr));">`;
-  list.forEach(r=>{ html += stubCard(r); });
-  return html + `</div>`;
-}
+function viewTickets(){ return `<div class="card" style="padding:22px;"><p>Suivi des tickets IT</p></div>`; }
+function viewPasswords(){ return `<div class="card" style="padding:22px;"><p>Gestion des mots de passe</p></div>`; }
+function viewTools(){ return `<div class="card" style="padding:22px;"><p>Catalogue des outils</p></div>`; }
+function viewHistory(){ return `<div class="card" style="padding:22px;"><p>Historique des actions</p></div>`; }
 
-/* VIEW PASSWORDS */
-function viewPasswords(){
-  let rows = allLignes().filter(x=> x.ligne.dateModifMdp || x.ligne.motDePasse);
-  const withStatus = rows.map(x=>({...x, st: pwStatus(x.ligne.dateModifMdp)}));
-  if(!withStatus.length) return emptyState('Aucun mot de passe', "Renseignez des mots de passe dans vos demandes.");
-  let html = `<div class="table-wrap card"><table><thead><tr><th>Agent</th><th>Outil</th><th>Mot de passe</th><th>Modifié le</th><th>Statut</th></tr></thead><tbody>`;
-  withStatus.forEach(x=>{
-    const a = agentByMat(x.ligne.matricule)||{};
-    const t = toolById(x.req.toolId);
-    html += `<tr><td><b>${esc(a.nom||x.ligne.matricule)}</b></td><td>${esc(t?t.nom:'')}</td><td class="mono">${esc(x.ligne.motDePasse||'—')}</td>
-      <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td>
-      <td><span class="pw-pill ${x.st.cls}"><span class="pw-dot"></span>${x.st.label}</span></td></tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-/* VIEW TOOLS */
-function viewTools(){
-  let html = `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
-  state.tools.forEach(t=>{
-    html += `<div class="card" style="padding:16px;">
-      <div class="flex items-center gap8" style="margin-bottom:8px;">
-        <div style="width:14px;height:14px;border-radius:4px;background:${t.couleur};"></div>
-        <b>${esc(t.nom)}</b>
-      </div>
-      <div class="small text-slate">Champs : ${t.champs.map(c=>esc(c.label)).join(', ')}</div>
-    </div>`;
-  });
-  return html + `</div>`;
-}
-
-/* VIEW HISTORY */
-function viewHistory(){
-  const termines = state.requests.filter(r=>r.statut==='termine');
-  if(!termines.length) return emptyState('Aucun historique', 'Les demandes terminées apparaîtront ici.');
-  let html = `<div class="table-wrap card"><table><thead><tr><th>Date</th><th>Outil</th><th>Ticket</th><th>Agents</th></tr></thead><tbody>`;
-  termines.forEach(r=>{
-    const t = toolById(r.toolId);
-    html += `<tr><td class="mono small">${fmtDate(r.dateCreation)}</td><td>${esc(t?t.nom:'')}</td><td class="mono">${esc(r.ticketId||'—')}</td>
-      <td class="small">${r.lignes.map(l=>esc(l.matricule)).join(', ')}</td></tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-/* MODALS */
-function openModal(html, wide=false){
+function openModal(html){
   const overlay = document.getElementById('modal-overlay');
   const modal = document.getElementById('modal');
-  modal.className = 'modal' + (wide?' wide':'');
   modal.innerHTML = html;
   overlay.classList.add('show');
   modal.querySelectorAll('[data-close]').forEach(b=> b.addEventListener('click', closeModal));
 }
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
-document.getElementById('modal-overlay').addEventListener('click', (e)=>{ if(e.target.id==='modal-overlay') closeModal(); });
 
-function openRequestModal(reqId){
-  const req = state.requests.find(r=>r.id===reqId);
-  const t = toolById(req.toolId);
-  let rows = req.lignes.map(l=>{
-    const a = agentByMat(l.matricule)||{};
-    return `<tr><td class="mono">${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td>
-      <td><input class="rl-mdp" data-ligne="${l.id}" value="${esc(l.motDePasse||'')}" placeholder="mot de passe" style="padding:4px 6px;"></td>
-      <td><input type="date" class="rl-date" data-ligne="${l.id}" value="${esc(l.dateModifMdp||'')}"></td></tr>`;
-  }).join('');
-
-  const body = `
-    <div class="field"><label>ID Ticket IT</label><input id="req-ticket" value="${esc(req.ticketId||'')}"></div>
-    <div class="field"><label>Statut</label><select id="req-statut">
-      <option value="en_cours" ${req.statut==='en_cours'?'selected':''}>En cours</option>
-      <option value="termine" ${req.statut==='termine'?'selected':''}>Terminé</option>
-    </select></div>
-    <div class="table-wrap"><table><thead><tr><th>Matricule</th><th>Nom</th><th>Mot de passe</th><th>Modifié le</th></tr></thead><tbody>${rows}</tbody></table></div>
-  `;
-  openModal(`<div class="modal-head"><h3>Demande — ${esc(t?t.nom:'Outil')}</h3><button class="modal-close" data-close>✕</button></div>
-  <div class="modal-body">${body}</div>
-  <div class="modal-foot">
-    <button class="btn btn-red" id="del-request-btn">Supprimer</button>
-    <button class="btn btn-primary" id="save-request-btn">Enregistrer</button>
-  </div>`, true);
-
-  document.getElementById('save-request-btn').addEventListener('click', ()=>{
-    req.ticketId = document.getElementById('req-ticket').value.trim();
-    req.statut = document.getElementById('req-statut').value;
-    document.querySelectorAll('.rl-mdp').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.motDePasse = inp.value.trim();
-    });
-    document.querySelectorAll('.rl-date').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.dateModifMdp = inp.value;
-    });
-    persistRequests();
-    closeModal();
-    toast('Demande mise à jour');
-    renderContent();
-  });
-  document.getElementById('del-request-btn').addEventListener('click', ()=>{
-    state.requests = state.requests.filter(r=>r.id!==reqId);
-    persistRequests();
-    closeModal();
-    toast('Demande supprimée');
-    renderContent();
-  });
-}
-
-function copyRequestRecap(reqId){
-  const req = state.requests.find(r=>r.id===reqId);
-  const t = toolById(req.toolId);
-  const rows = req.lignes.map(l=>{
-    const a = agentByMat(l.matricule)||{};
-    return [l.matricule, a.nom||'', a.contact||'', l.commentaire||''].join('\t');
-  }).join('\n');
-  navigator.clipboard.writeText(rows);
-  toast('Récapitulatif copié dans le presse-papier');
-}
-
-/* EVENT BINDING */
 function bindContentEvents(){
-  document.querySelectorAll('[data-nav]').forEach(el=> el.addEventListener('click', ()=> switchView(el.dataset.nav)));
-  document.querySelectorAll('[data-open-request]').forEach(el=> el.addEventListener('click', ()=> openRequestModal(el.dataset.openRequest)));
-  document.querySelectorAll('[data-copy-request]').forEach(el=> el.addEventListener('click', ()=> copyRequestRecap(el.dataset.copyRequest)));
+  const addBtn = document.getElementById('btn-add-agent');
+  if(addBtn) addBtn.addEventListener('click', () => openAgentModal(null));
 
-  const nrTool = document.getElementById('nr-tool');
-  if(nrTool) nrTool.addEventListener('change', ()=>{ state.newReqTool = nrTool.value || null; state.newReqSelected=[]; renderContent(); });
-  const apSearch = document.getElementById('ap-search');
-  if(apSearch){ renderApList(); apSearch.addEventListener('input', ()=> renderApList(apSearch.value)); }
-  renderSelectedChips();
-
-  const createBtn = document.getElementById('create-request-btn');
-  if(createBtn) createBtn.addEventListener('click', ()=>{
-    const tool = toolById(state.newReqTool);
-    const lignes = state.newReqSelected.map(mat=>({
-      id: uid(), matricule: mat, valeurs:{}, commentaire:'', motDePasse:'', dateModifMdp:''
-    }));
-    const req = {id: uid(), toolId: tool.id, dateCreation: todayISO(), ticketId:'', statut:'en_cours', lignes};
-    state.requests.push(req);
-    persistRequests();
-    toast('Demande enregistrée');
-    switchView('tickets');
+  document.querySelectorAll('[data-edit-agent]').forEach(el => {
+    el.addEventListener('click', () => openAgentModal(el.dataset.editAgent));
   });
+
+  document.querySelectorAll('[data-del-agent]').forEach(el => {
+    el.addEventListener('click', () => {
+      if(!confirm('Supprimer cet agent ?')) return;
+      state.agents = state.agents.filter(a => a.matricule !== el.dataset.delAgent);
+      persistAgents();
+      toast('Agent supprimé');
+      renderContent();
+    });
+  });
+
+  const filterInp = document.getElementById('agent-filter-input');
+  if(filterInp){
+    filterInp.addEventListener('input', ()=>{
+      state.agentFilter = filterInp.value;
+      renderContent();
+    });
+  }
 }
 
-/* ATTACH EXPORT / IMPORT LISTENERS */
 document.getElementById('export-json-btn').addEventListener('click', exportDataJSON);
 document.getElementById('import-json-btn').addEventListener('click', ()=> document.getElementById('import-file-input').click());
 document.getElementById('import-file-input').addEventListener('change', (e)=>{
