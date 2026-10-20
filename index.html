@@ -45,7 +45,6 @@ button{font-family:inherit;cursor:pointer;}
 input,select,textarea{font-family:inherit;}
 ::selection{background:var(--amber);color:var(--ink);}
 
-/* LAYOUT */
 #app{display:flex;height:100vh;width:100vw;}
 
 /* RAIL NAV */
@@ -109,20 +108,10 @@ input,select,textarea{font-family:inherit;}
 }
 .search-wrap input:focus{border-color:var(--amber);background:#fff;}
 .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--slate-500);fill:none;stroke-width:2;}
-#search-results{
-  position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:12px;
-  box-shadow:var(--shadow);border:1px solid var(--border);max-height:340px;overflow:auto;display:none;z-index:50;
-}
-#search-results.show{display:block;}
-.sr-item{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;}
-.sr-item:last-child{border-bottom:none;}
-.sr-item:hover{background:var(--paper);}
-.sr-name{font-weight:600;font-size:13.5px;}
-.sr-meta{font-size:12px;color:var(--slate-500);}
 
 #content{flex:1;overflow:auto;padding:24px 28px 60px;}
 
-/* CARDS / GENERIC */
+/* CARDS & COMPONENTS */
 .card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);}
 .grid{display:grid;gap:16px;}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:22px;}
@@ -148,20 +137,11 @@ input,select,textarea{font-family:inherit;}
   padding:16px 18px;position:relative;display:flex;flex-direction:column;gap:10px;
   border-left:5px solid var(--amber);
 }
-.stub.stub-red{border-left-color:var(--red);}
-.stub.stub-teal{border-left-color:var(--teal);}
-.stub::before,.stub::after{
-  content:"";position:absolute;width:14px;height:14px;background:var(--paper);border-radius:50%;
-  top:50%;transform:translateY(-50%);border:1px solid var(--border);
-}
-.stub::before{left:-8px;}
-.stub::after{right:-8px;}
 .stub-perf{border-top:2px dashed var(--border);margin:2px -18px 0;}
 .stub-head{display:flex;align-items:center;justify-content:space-between;}
 .stub-tool{font-weight:700;font-family:'Space Grotesk';font-size:14.5px;}
 .tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700;}
 .tag-amber{background:#FCEED9;color:var(--amber-deep);}
-.tag-red{background:#FBE1DF;color:var(--red-deep);}
 .tag-teal{background:#DCF3E9;color:var(--teal-deep);}
 .tag-slate{background:#EAEDF4;color:var(--slate-700);}
 .stub-body{font-size:12.8px;color:var(--slate-700);display:flex;flex-wrap:wrap;gap:6px 16px;}
@@ -181,13 +161,9 @@ input,select,textarea{font-family:inherit;}
 .btn-amber{background:var(--amber);color:var(--ink);}
 .btn-amber:hover{background:var(--amber-deep);color:#fff;}
 .btn-teal{background:var(--teal);color:#fff;}
-.btn-teal:hover{background:var(--teal-deep);}
-.btn-red{background:var(--red);color:#fff;}
-.btn-red:hover{background:var(--red-deep);}
 .btn-ghost{background:var(--paper);color:var(--slate-700);border:1px solid var(--border);}
 .btn-ghost:hover{background:#EAEDF4;}
 .btn-sm{padding:7px 11px;font-size:12.5px;border-radius:8px;}
-.btn:disabled{opacity:.45;cursor:not-allowed;}
 .icon-btn{
   width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:#fff;
   display:flex;align-items:center;justify-content:center;color:var(--slate-700);flex-shrink:0;
@@ -223,7 +199,6 @@ tbody tr:hover{background:#FAFBFD;}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--amber);}
 .field textarea{resize:vertical;min-height:64px;}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;}
-.form-grid .full{grid-column:1/-1;}
 
 /* MODAL */
 .modal-overlay{
@@ -232,14 +207,14 @@ tbody tr:hover{background:#FAFBFD;}
 }
 .modal-overlay.show{display:flex;}
 .modal{
-  background:#fff;border-radius:18px;max-width:640px;width:100%;box-shadow:0 20px 60px rgba(18,32,61,.3);
+  background:#fff;border-radius:18px;max-width:680px;width:100%;box-shadow:0 20px 60px rgba(18,32,61,.3);
   animation:modalIn .18s ease;margin-bottom:40px;
 }
 @keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98);}to{opacity:1;transform:none;}}
-.modal.wide{max-width:900px;}
+.modal.wide{max-width:920px;}
 .modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
 .modal-head h3{margin:0;font-size:17px;font-weight:600;}
-.modal-body{padding:22px 24px;max-height:65vh;overflow:auto;}
+.modal-body{padding:22px 24px;max-height:68vh;overflow:auto;}
 .modal-foot{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;}
 .modal-close{width:32px;height:32px;border-radius:8px;border:none;background:var(--paper);display:flex;align-items:center;justify-content:center;cursor:pointer;}
 .modal-close svg{width:16px;height:16px;stroke:var(--slate-700);}
@@ -254,7 +229,6 @@ tbody tr:hover{background:#FAFBFD;}
 
 /* AGENT PICKER */
 .agent-picker{border:1.5px solid var(--border);border-radius:12px;padding:10px;max-height:260px;overflow:auto;}
-.ap-search{margin-bottom:8px;}
 .ap-row{display:flex;align-items:center;gap:10px;padding:8px 8px;border-radius:8px;}
 .ap-row:hover{background:var(--paper);}
 .ap-row input[type=checkbox]{width:17px;height:17px;accent-color:var(--amber);}
@@ -274,7 +248,7 @@ tbody tr:hover{background:#FAFBFD;}
 .banner{display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;margin-bottom:18px;font-size:13.5px;font-weight:600;}
 .banner svg{width:20px;height:20px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;}
 .banner-amber{background:#FCEED9;color:var(--amber-deep);border:1px solid #F2D6A6;}
-.banner a,.banner .link{text-decoration:underline;cursor:pointer;}
+.banner .link{text-decoration:underline;cursor:pointer;}
 
 /* TOAST */
 #toast{
@@ -292,23 +266,11 @@ tbody tr:hover{background:#FAFBFD;}
 .agent-hero-info h2{margin:0 0 3px;font-size:18px;}
 .agent-hero-info div{font-size:12.8px;opacity:.85;}
 
-@media (max-width:980px){
-  .form-grid{grid-template-columns:1fr;}
-  .search-wrap{width:200px;}
-  .kpis{grid-template-columns:repeat(2,1fr);}
-}
-@media (max-width:700px){
-  :root{--rail-w:64px;}
-  .rail-btn{width:48px;font-size:9px;}
-  .rail-logo{width:36px;height:36px;font-size:15px;}
-  #content{padding:16px;}
-  .kpis{grid-template-columns:1fr;}
-  .search-wrap{display:none;}
-}
-.text-red{color:var(--red-deep);}
-.text-teal{color:var(--teal-deep);}
-.text-amber{color:var(--amber-deep);}
-.text-slate{color:var(--slate-500);}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.detail-item{padding:12px 14px;background:var(--paper);border-radius:10px;border:1px solid var(--border);}
+.detail-item .lbl{font-size:11px;color:var(--slate-500);font-weight:600;text-transform:uppercase;margin-bottom:2px;}
+.detail-item .val{font-size:13.5px;font-weight:600;color:var(--slate-900);}
+
 .small{font-size:12px;}
 .flex{display:flex;}
 .gap8{gap:8px;}
@@ -332,7 +294,6 @@ tbody tr:hover{background:#FAFBFD;}
         <div class="search-wrap">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
           <input id="global-search" placeholder="Rechercher un matricule ou un nom…" autocomplete="off">
-          <div id="search-results"></div>
         </div>
       </div>
     </div>
@@ -346,85 +307,85 @@ tbody tr:hover{background:#FAFBFD;}
 <div id="toast"></div>
 
 <script>
-/* LISTE DES AGENTS EXTRAITS DIRECTEMENT DE LA CAPTURE D'ÉCRAN EXCEL DU RÉFÉRENTIEL */
+/* RÉFÉRENTIEL COMPLET (CHAMPS SESSIONS DE L'AGENT VIDES PAR DÉFAUT) */
 const SEED_AGENTS = [
-  {"matricule": "CN00352", "nom": "RAVOLALAINA Laurencia", "statut": "CDI", "anciennete": "4 ans et 11 mois"},
-  {"matricule": "CN00566", "nom": "RAFARASOA Fanomezana Albertine", "statut": "CDI", "anciennete": "3 ans et 0 mois"},
-  {"matricule": "CN00567", "nom": "RASOARIMALALA Volonirina Santatra Ny Ho Avy Safidy", "statut": "CDI", "anciennete": "3 ans et 0 mois"},
-  {"matricule": "CN00573", "nom": "VITA Faniry", "statut": "CDI", "anciennete": "3 ans et 0 mois"},
-  {"matricule": "CN00751", "nom": "HERIMAMPIONONA Tahiry Rovaniaina Larissa", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00780", "nom": "RAZANAMANITRA Onitiana Tahiriniaina", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00755", "nom": "BARIJAONA MERANTIANA Estelle Odette", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00757", "nom": "RANDRIAMBAO Fidinirina Miharisoa", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00784", "nom": "RAKOTOARISOA Zoliniaina El-Voary", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00750", "nom": "RATRIMONIAINA Anjasoa", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00779", "nom": "HERINIAINA Fenomampionona Mbolatiana", "statut": "CDI", "anciennete": "2 ans et 2 mois"},
-  {"matricule": "CN00792", "nom": "RAZAFINDRAVAO Clémentine", "statut": "CDI", "anciennete": "2 ans et 1 mois"},
-  {"matricule": "CN00812", "nom": "RASOAMANANJARA Napoina Jessica", "statut": "CDI", "anciennete": "2 ans et 0 mois"},
-  {"matricule": "CN00817", "nom": "ANDRIMIARISOA Mahefa Tina Michelle", "statut": "CDI", "anciennete": "2 ans et 0 mois"},
-  {"matricule": "CN00819", "nom": "RAKOTONOMENJANAHARY Sahoby Manitra", "statut": "CDI", "anciennete": "2 ans et 0 mois"},
-  {"matricule": "CN00816", "nom": "RAKOTOMALALA Ravoniaina Eulalie", "statut": "CDI", "anciennete": "2 ans et 0 mois"},
-  {"matricule": "CN00992", "nom": "DAKALO Edwardo", "statut": "CDI", "anciennete": "1 ans et 4 mois"},
-  {"matricule": "CN00991", "nom": "RAJAONARISON Ionja Nantenaina", "statut": "CDI", "anciennete": "1 ans et 4 mois"},
-  {"matricule": "CN00996", "nom": "RAJAONA Anjamalala Stephenson Lydia", "statut": "CDI", "anciennete": "1 ans et 4 mois"},
-  {"matricule": "CN01014", "nom": "RANDRIARISOA Lucas Antonio", "statut": "CDI", "anciennete": "1 ans et 3 mois"},
-  {"matricule": "CI02188", "nom": "ANDRIANAVALONA Fenitra Malala", "statut": "INT MDJ", "anciennete": "1 ans et 3 mois"},
-  {"matricule": "CI02229", "nom": "RAZAFINIAINA Lantosoa Marguerite", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois"},
-  {"matricule": "CI02230", "nom": "RAZAFINDRALANDY Erica Josephson", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois"},
-  {"matricule": "CI02231", "nom": "RAFALIMANANA Falisoa Olivia", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois"},
-  {"matricule": "CI02296", "nom": "RATAHINJANAHARY Hasiniaina Ricah", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois"},
-  {"matricule": "CI02293", "nom": "RANDRIANOMENJANAHARY Debora", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois"},
-  {"matricule": "CI02298", "nom": "RANDRIAMIRADO Vetso Nirina Patricia", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois"},
-  {"matricule": "CI02299", "nom": "MAMITIANA Nico Mario", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois"},
-  {"matricule": "CN01211", "nom": "RAZAFINDRATSARA Hantatiana Adrienne", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01213", "nom": "RAMAMBASON Olivia Nirina", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01218", "nom": "RAKOTOARIMALALA Kanto Nantenaina Finaritra Marinah", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01208", "nom": "RAKOTOARIMANANA Verohanitra", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01207", "nom": "RAMANITRARIVO Miandrisoa Ony Fanantenana Kessia", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01219", "nom": "RAJONAH Vololoniany Hasinavalona", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01214", "nom": "RAZAFIMAHATRATRA Faniriniaina Zoliana", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01216", "nom": "RAZAFIARIVELO Heliravaka Ornella", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01224", "label": "RAHARIMALALA Maminiaina Danielle", "nom": "RAHARIMALALA Maminiaina Danielle", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01220", "nom": "RAKOTOMALALA Rick Bryan", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01221", "nom": "ORIMBATOSOA Rindra Antenaina", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01226", "nom": "RAMAROLAHY Rojoniaina Noella", "statut": "CDI", "anciennete": "0 ans et 10 mois"},
-  {"matricule": "CN01483", "nom": "NOMENJANAHARY Sombiniaina Nirisoa Fanniah", "statut": "CDD", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CN01484", "nom": "RAZAFINDRAZAIAHARISOA Holiniaina Natacha", "statut": "CDD", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CN01486", "nom": "NOMENJANAHARY Tanjoniaina", "statut": "CDD", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CN01489", "nom": "RAHARIVOLOLONA Voahirana Tojonirina", "statut": "CDD", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CN01490", "nom": "RAHARINIRIANA Voahirana Niaina", "statut": "CDD", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CI02666", "nom": "FANOMEZANJAHARY Collins Vatosoa Grassia", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CI02667", "nom": "ANDRIAMANANTENASOA Mariane Jeannita", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CI02668", "nom": "TOKY AVOTRINAINA Alinah Joséphine", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CI02669", "nom": "ANDRIANIAINA Dinafitiavana Nancya Mickaella", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CI02672", "nom": "FARALAHY Romuald", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois"},
-  {"matricule": "CN01456", "nom": "RAMIANDRINANDRASANA Nico Christiano", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01455", "nom": "RABEFIARIHY Dina Herizo", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01459", "nom": "DIMBINIAINA Barthelemy", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01457", "nom": "RAFARAMANANA Tiavina Aimée Kézia", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01458", "nom": "RANDRIARIMANANA Fredo Mahery", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01460", "nom": "MIANDRIARILALA Vicky Sandrice José Nithomi", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01536", "nom": "TSIARO NY NOFY VOARY NIRAINA", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01537", "nom": "RATOLOJANAHARY Nina Marie", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01538", "nom": "RAKOTOMAHEFA Mirantomalala", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01539", "nom": "ANJARATIANA Princy", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01553", "nom": "RAZANAMAHASOA Dianà", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01554", "nom": "RASOLOHARIMALALA Antsa Fitia Dina Erica", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01555", "nom": "NY FANOMEZANTSOA Nekena", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01556", "nom": "RAJOSEFA Ando Niaina", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01557", "nom": "NOMENJANAHARY Solonjatovoheriniaina Mampifaly", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01558", "nom": "RIGEOT Bonaventure Zamandary", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01559", "nom": "RAKOTOMAHEFA Joana Zakaria", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01560", "nom": "RAHARIMINO Safidy Lalaina", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01561", "nom": "ETONO Mireille Hariniaina", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01562", "nom": "MANAMPISOA Agnès Elsie", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01564", "nom": "RASOLOFOMANANA Vola Hariniraka", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01565", "nom": "RAKOTONARIVO Raitraniaina Olivier", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01566", "nom": "RAHAJARIVELO Dimbiarijaona Herizo", "statut": "CDI", "anciennete": "0 ans et 2 mois"},
-  {"matricule": "CN01228", "nom": "RABIAZA Rovaniaina Patrick", "statut": "CDI", "anciennete": "0 ans et 1 mois"},
-  {"matricule": "CN01229", "nom": "RANDRIANALYS Mario Kantoniaina", "statut": "CDI", "anciennete": "0 ans et 1 mois"},
-  {"matricule": "CN01230", "nom": "FARASOA ANDRIAMIHAJA Victoria", "statut": "CDI", "anciennete": "0 ans et 1 mois"},
-  {"matricule": "CN01232", "nom": "RABEARISOA Hasina Fifaliana", "statut": "CDI", "anciennete": "0 ans et 1 mois"}
+  {"matricule": "CN00352", "nom": "RAVOLALAINA Laurencia", "statut": "CDI", "anciennete": "4 ans et 11 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0341262315", "mail": "ravo.ravolalaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN00566", "nom": "RAFARASOA Fanomezana Albertine", "statut": "CDI", "anciennete": "3 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0383358790", "mail": "fanomezana.rafarasoa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN00567", "nom": "RASOARIMALALA Volonirina Santatra Ny Ho Avy Safidy", "statut": "CDI", "anciennete": "3 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0384509103", "mail": "volonirina.rasoarimalala@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00573", "nom": "VITA Faniry", "statut": "CDI", "anciennete": "3 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0340624343", "mail": "faniry.vita@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN00751", "nom": "HERIMAMPIONONA Tahiry Rovaniaina Larissa", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0348541805", "mail": "tahiry.herimampionona@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN00780", "nom": "RAZANAMANITRA Onitiana Tahiriniaina", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0380997934", "mail": "onitiana.razanamanitra@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00755", "nom": "BARIJAONA MERANTIANA Estelle Odette", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0389832781", "mail": "estelle.barijaona@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN00757", "nom": "RANDRIAMBAO Fidinirina Miharisoa", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0389500691", "mail": "fidinirina.randriambao@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00784", "nom": "RAKOTOARISOA Zoliniaina El-Voary", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0386191973", "mail": "zoliniaina.rakotoarisoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00750", "nom": "RATRIMONIAINA Anjasoa", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0383340581", "mail": "anjasoa.ratrimoniaina@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00779", "nom": "HERINIAINA Fenomampionona Mbolatiana", "statut": "CDI", "anciennete": "2 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0342364737", "mail": "feno.heriniaina@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN00792", "nom": "RAZAFINDRAVAO Clémentine", "statut": "CDI", "anciennete": "2 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0383939075", "mail": "clementine.razafindravao@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN00812", "nom": "RASOAMANANJARA Napoina Jessica", "statut": "CDI", "anciennete": "2 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0387689323", "mail": "napoina.rasoamananjara@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN00817", "nom": "ANDRIMIARISOA Mahefa Tina Michelle", "statut": "CDI", "anciennete": "2 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0348324292", "mail": "mahefa.andriamiarisoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN00819", "nom": "RAKOTONOMENJANAHARY Sahoby Manitra", "statut": "CDI", "anciennete": "2 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0343650017", "mail": "sahoby.rakotonomenjanahary@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN00816", "nom": "RAKOTOMALALA Ravoniaina Eulalie", "statut": "CDI", "anciennete": "2 ans et 0 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0380941279", "mail": "ravoniaina.rakotomalala@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN00992", "nom": "DAKALO Edwardo", "statut": "CDI", "anciennete": "1 ans et 4 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0387273255", "mail": "edwardo.dakalo@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN00991", "nom": "RAJAONARISON Ionja Nantenaina", "statut": "CDI", "anciennete": "1 ans et 4 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0386217202", "mail": "ionja.rajaonarison@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN00996", "nom": "RAJAONA Anjamalala Stephenson Lydia", "statut": "CDI", "anciennete": "1 ans et 4 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0349468512", "mail": "stephenson.rajaona@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01014", "nom": "RANDRIARISOA Lucas Antonio", "statut": "CDI", "anciennete": "1 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0343946834", "mail": "lucas.randriarisoa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02188", "nom": "ANDRIANAVALONA Fenitra Malala", "statut": "INT MDJ", "anciennete": "1 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0381848395", "mail": "fenitra.andrianavalona@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CI02229", "nom": "RAZAFINIAINA Lantosoa Marguerite", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0381665428", "mail": "lantosoa.razafiniaina@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CI02230", "nom": "RAZAFINDRALANDY Erica Josephson", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0387837009", "mail": "josephson.razafindralandy@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02231", "nom": "RAFALIMANANA Falisoa Olivia", "statut": "INT MDJ", "anciennete": "1 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0381665413", "mail": "falisoa.rafalimanana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CI02296", "nom": "RATAHINJANAHARY Hasiniaina Ricah", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0384748401", "mail": "ricah.ratahinjanahary@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02293", "nom": "RANDRIANOMENJANAHARY Debora", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0342795411", "mail": "debora.randrianomenjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CI02298", "nom": "RANDRIAMIRADO Vetso Nirina Patricia", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0386209313", "mail": "vetso.randriamirado@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02299", "nom": "MAMITIANA Nico Mario", "statut": "INT MDJ", "anciennete": "1 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0387129053", "mail": "nico.mamitiana@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01211", "nom": "RAZAFINDRATSARA Hantatiana Adrienne", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0343480242", "mail": "hantatiana.razafindratsara@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01213", "nom": "RAMAMBASON Olivia Nirina", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0380939497", "mail": "olivia.ramambason@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01218", "nom": "RAKOTOARIMALALA Kanto Nantenaina Finaritra Marinah", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0340110639", "mail": "finaritra.rakotoarimalala@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01208", "nom": "RAKOTOARIMANANA Verohanitra", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0340476456", "mail": "verohanitra.rakotoarimanana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01207", "nom": "RAMANITRARIVO Miandrisoa Ony Fanantenana Kessia", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0382799085", "mail": "ony.ramanitrarivo@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01219", "nom": "RAJONAH Vololoniany Hasinavalona", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0387610510", "mail": "hasinavalona.rajonah@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01214", "nom": "RAZAFIMAHATRATRA Faniriniaina Zoliana", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0382779691", "mail": "zoliana.razafimahatratra@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01216", "nom": "RAZAFIARIVELO Heliravaka Ornella", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0341627776", "mail": "heliravaka.razafiarivelo@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01224", "nom": "RAHARIMALALA Maminiaina Danielle", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0342873350", "mail": "maminiaina.raharimalala@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01220", "nom": "RAKOTOMALALA Rick Bryan", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0382125228", "mail": "rick.rakotomalala@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01221", "nom": "ORIMBATOSOA Rindra Antenaina", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0347607680", "mail": "rindra.orimbatosoa@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01226", "nom": "RAMAROLAHY Rojoniaina Noella", "statut": "CDI", "anciennete": "0 ans et 10 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0347458018", "mail": "noella.ramarolahy@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01483", "nom": "NOMENJANAHARY Sombiniaina Nirisoa Fanniah", "statut": "CDD", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0384131505", "mail": "nirisoa.nomenjanahary@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01484", "nom": "RAZAFINDRAZAIAHARISOA Holiniaina Natacha", "statut": "CDD", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0384325660", "mail": "natacha.razafindrazaiaharisoa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01486", "nom": "NOMENJANAHARY Tanjoniaina", "statut": "CDD", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0387062625", "mail": "tanjoniaina.nomenjanahary@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01489", "nom": "RAHARIVOLOLONA Voahirana Tojonirina", "statut": "CDD", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0341512899", "mail": "voahirana.raharivololona@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01490", "nom": "RAHARINIRIANA Voahirana Niaina", "statut": "CDD", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0381824445", "mail": "niaina.rahariniriana@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CI02666", "nom": "FANOMEZANJAHARY Collins Vatosoa Grassia", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0349194359", "mail": "collins.fanomezanjahary@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02667", "nom": "ANDRIAMANANTENASOA Mariane Jeannita", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "038385929", "mail": "mariane.andriamanantenasoa@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CI02668", "nom": "TOKY AVOTRINAINA Alinah Joséphine", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0380017187", "mail": "alinah.toky@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CI02669", "nom": "ANDRIANIAINA Dinafitiavana Nancya Mickaella", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0380905368", "mail": "dinafitiavana.andrianiaina@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CI02672", "nom": "FARALAHY Romuald", "statut": "INT MDJ", "anciennete": "0 ans et 3 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0385184824", "mail": "romuald.faralahy@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01456", "nom": "RAMIANDRINANDRASANA Nico Christiano", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0387900735", "mail": "nico.ramiandrinandrasana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01455", "nom": "RABEFIARIHY Dina Herizo", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0382883205", "mail": "dina.rabefiarihy@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01459", "nom": "DIMBINIAINA Barthelemy", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0380079297", "mail": "barthelemy.dimbiniaina@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01457", "nom": "RAFARAMANANA Tiavina Aimée Kézia", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0382642295", "mail": "Tiavina.RAFARAMANANA@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01458", "nom": "RANDRIARIMANANA Fredo Mahery", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0384366017", "mail": "fredo.randriarimanana@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01460", "nom": "MIANDRIARILALA Vicky Sandrice José Nithomi", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0386566602", "mail": "vicky.miandriarilala@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01536", "nom": "TSIARO NY NOFY VOARY NIRAINA", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0389584235", "mail": "voary.tsiaro@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01537", "nom": "RATOLOJANAHARY Nina Marie", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0384093485", "mail": "nina.ratolojanahary@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01538", "nom": "RAKOTOMAHEFA Mirantomalala", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0384294853", "mail": "miranto.rakotomahefa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01539", "nom": "ANJARATIANA Princy", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0384857358", "mail": "princy.anjaratiana@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01553", "nom": "RAZANAMAHASOA Dianà", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0383048125", "mail": "diana.razanamahasoa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01554", "nom": "RASOLOHARIMALALA Antsa Fitia Dina Erica", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0382166115", "mail": "erica.rasoloharimalala@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01555", "nom": "NY FANOMEZANTSOA Nekena", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0342013231", "mail": "nekena.fanomezantsoa@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01556", "nom": "RAJOSEFA Ando Niaina", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0348446684", "mail": "ando.rajosefa@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01557", "nom": "NOMENJANAHARY Solonjatovoheriniaina Mampifaly", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0343639503", "mail": "solonjatovoheriniaina.nomenjanahary@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01558", "nom": "RIGEOT Bonaventure Zamandary", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0386649711", "mail": "bonaventure.rigeot@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01559", "nom": "RAKOTOMAHEFA Joana Zakaria", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0384994815", "mail": "zakaria.rakotomahefa@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01560", "nom": "RAHARIMINO Safidy Lalaina", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0342571925", "mail": "safidy.raharimino@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01561", "nom": "ETONO Mireille Hariniaina", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0389373660", "mail": "mireille.etono@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01562", "nom": "MANAMPISOA Agnès Elsie", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0347551178", "mail": "agnes.manampisoa@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01564", "nom": "RASOLOFOMANANA Vola Hariniraka", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0387847117", "mail": "vola.rasolofomanana@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"},
+  {"matricule": "CN01565", "nom": "RAKOTONARIVO Raitraniaina Olivier", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0387785076", "mail": "raitra.rakotonarivo@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01566", "nom": "RAHAJARIVELO Dimbiarijaona Herizo", "statut": "CDI", "anciennete": "0 ans et 2 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOARIMANANA Tahina Nomenjanahary", "login": "", "session": "", "contact": "0340759382", "mail": "herizo.rahajarivelo@connecteo.mg", "mailN1": "tahina.rakotoarimanana@connecteo.mg"},
+  {"matricule": "CN01228", "nom": "RABIAZA Rovaniaina Patrick", "statut": "CDI", "anciennete": "0 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0383735062", "mail": "rovaniaina.rabiaza@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01229", "nom": "RANDRIANALYS Mario Kantoniaina", "statut": "CDI", "anciennete": "0 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAVONISON Hanitra Martina", "login": "", "session": "", "contact": "0380518161", "mail": "kantoniaina.randrianalys@connecteo.mg", "mailN1": "Martina.RAVONISON@connecteo.mg"},
+  {"matricule": "CN01230", "nom": "FARASOA ANDRIAMIHAJA Victoria", "statut": "CDI", "anciennete": "0 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "RAKOTOAMALALA Fanomezantsoa Tahiry Sarobidy", "login": "", "session": "", "contact": "0389800479", "mail": "victoria.andriamihaja@connecteo.mg", "mailN1": "fanomezantsoa_sarobidy.rakotomalala@connecteo.mg"},
+  {"matricule": "CN01232", "nom": "RABEARISOA Hasina Fifaliana", "statut": "CDI", "anciennete": "0 ans et 1 mois", "fonction": "CSA Appels Entrants MVOLA", "n1": "DILIMIZONY Ravaka Lalaina Francia", "login": "", "session": "", "contact": "0383392162", "mail": "hasina.rabearisoa@connecteo.mg", "mailN1": "ravaka.dilimizony@connecteo.mg"}
 ];
 
 const SEED_TOOLS = [
@@ -441,12 +402,7 @@ let state = {
   tools: [],
   requests: [],
   view: 'dashboard',
-  agentSort: 'nom',
   agentFilter: '',
-  ticketFilter: 'all',
-  ticketToolFilter: 'all',
-  pwFilter: 'all',
-  historyAgent: null,
   newReqSelected: [],
   newReqTool: null,
   lastGeneratedRequest: null
@@ -512,8 +468,6 @@ function uid(){ return 'id'+Date.now().toString(36)+Math.random().toString(36).s
 function esc(s){ return (s===undefined||s===null) ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(iso){ if(!iso) return '—'; const d=new Date(iso+'T00:00:00'); return isNaN(d) ? iso : d.toLocaleDateString('fr-FR'); }
-function daysFromToday(iso){ const d=new Date(iso+'T00:00:00'); const t=new Date(); t.setHours(0,0,0,0); return Math.round((d-t)/86400000); }
-function addDays(iso, n){ const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10); }
 function toolById(id){ return state.tools.find(t=>t.id===id); }
 function agentByMat(mat){ return state.agents.find(a=>a.matricule===mat); }
 function initials(nom){ if(!nom) return '?'; const parts=nom.trim().split(/\s+/); return ((parts[0]?.[0]||'')+(parts[1]?.[0]||'')).toUpperCase(); }
@@ -526,50 +480,23 @@ function toast(msg, ok=true){
   window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-function pwStatus(dateModif){
-  if(!dateModif) return {label:'Non renseigné', cls:'pw-gray', days:null};
-  const exp = addDays(dateModif, 90);
-  const left = daysFromToday(exp);
-  if(left < 0) return {label:'Expiré', cls:'pw-red', days:left, exp};
-  if(left <= 15) return {label: left+' j restants', cls:'pw-orange', days:left, exp};
-  return {label: left+' j restants', cls:'pw-green', days:left, exp};
-}
-
-function allLignes(){
-  const out=[];
-  state.requests.forEach(r=>{
-    (r.lignes||[]).forEach(l=>{ out.push({req:r, ligne:l}); });
-  });
-  return out;
-}
-
 function pendingTicketRequests(){ return state.requests.filter(r=> !r.ticketId && r.statut!=='termine'); }
-function expiringPasswords(){
-  return allLignes().filter(x=> x.ligne.dateModifMdp).map(x=>{
-    const st = pwStatus(x.ligne.dateModifMdp);
-    return {...x, st};
-  }).filter(x=> x.st.cls==='pw-orange' || x.st.cls==='pw-red');
-}
 
 const NAV = [
   {id:'dashboard', label:'Accueil', icon:'M3 11.5L12 4l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z'},
   {id:'agents', label:'Agents', icon:'M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2 M9 11a4 4 0 100-8 4 4 0 000 8z M22 21v-2a4 4 0 00-3-3.87 M16 3.13a4 4 0 010 7.75'},
   {id:'newrequest', label:'Nouvelle demande', icon:'M12 5v14M5 12h14'},
   {id:'tickets', label:'Suivi tickets', icon:'M4 7h16M4 12h16M4 17h10'},
-  {id:'passwords', label:'Mots de passe', icon:'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zM8 11V7a4 4 0 118 0v4'},
   {id:'tools', label:'Outils', icon:'M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z'},
-  {id:'history', label:'Historique', icon:'M3 3v5h5M3.05 13a9 9 0 106.16-8.63 M12 7v5l4 2'},
 ];
 
 function renderRail(){
   const rail = document.getElementById('rail');
   const pendingCount = pendingTicketRequests().length;
-  const pwCount = expiringPasswords().length;
   rail.innerHTML = `<div class="rail-logo">AH</div>` +
     NAV.map(n=>{
       let badge='';
       if(n.id==='tickets' && pendingCount>0) badge=`<span class="rail-badge">${pendingCount}</span>`;
-      if(n.id==='passwords' && pwCount>0) badge=`<span class="rail-badge">${pwCount}</span>`;
       return `<button class="rail-btn ${state.view===n.id?'active':''}" data-nav="${n.id}">
         <svg viewBox="0 0 24 24">${n.icon.split(' M').map((d,i)=>`<path d="${i===0?d:'M'+d}"/>`).join('')}</svg>
         <span>${n.label}</span>${badge}
@@ -583,14 +510,11 @@ const TITLES = {
   agents:['Référentiel agents','Base centrale des agents CNTO'],
   newrequest:['Nouvelle demande','Créer une demande groupée pour un ou plusieurs agents'],
   tickets:['Suivi des tickets IT','Demandes en cours, en attente d’ID et clôturées'],
-  passwords:['Mots de passe','Suivi des réinitialisations et expirations à 90 jours'],
-  tools:['Catalogue des outils','Gérer les outils et types d’accès disponibles'],
-  history:['Historique & analyse','Demandes finalisées et récurrence des réclamations'],
+  tools:['Catalogue des outils','Gérer les outils et types d’accès disponibles']
 };
 
-function switchView(view, opts={}){
+function switchView(view){
   state.view = view;
-  if(opts.historyAgent !== undefined) state.historyAgent = opts.historyAgent;
   document.getElementById('view-title').textContent = TITLES[view][0];
   document.getElementById('view-sub').textContent = TITLES[view][1];
   renderRail();
@@ -603,37 +527,32 @@ function renderContent(){
   else if(state.view==='agents') c.innerHTML = viewAgents();
   else if(state.view==='newrequest') c.innerHTML = viewNewRequest();
   else if(state.view==='tickets') c.innerHTML = viewTickets();
-  else if(state.view==='passwords') c.innerHTML = viewPasswords();
   else if(state.view==='tools') c.innerHTML = viewTools();
-  else if(state.view==='history') c.innerHTML = viewHistory();
   bindContentEvents();
 }
 
-/* VIEW DASHBOARD */
+/* DASHBOARD */
 function viewDashboard(){
   const pending = pendingTicketRequests();
-  const pwExp = expiringPasswords();
   const enCours = state.requests.filter(r=>r.statut==='en_cours').length;
 
   let html = `<div class="kpis">
     <div class="kpi k-amber"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
       <div class="kpi-num">${pending.length}</div><div class="kpi-label">En attente d'ID ticket IT</div></div>
-    <div class="kpi k-red"><svg viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zM8 11V7a4 4 0 118 0v4"/></svg>
-      <div class="kpi-num">${pwExp.length}</div><div class="kpi-label">Mots de passe à surveiller (≤15j)</div></div>
     <div class="kpi k-ink"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <div class="kpi-num">${enCours}</div><div class="kpi-label">Demandes en cours de traitement</div></div>
+      <div class="kpi-num">${enCours}</div><div class="kpi-label">Demandes en cours</div></div>
     <div class="kpi k-teal"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
       <div class="kpi-num">${state.agents.length}</div><div class="kpi-label">Agents référencés</div></div>
   </div>`;
 
   if(pending.length){
     html += `<div class="banner banner-amber"><svg viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.7 3.86a2 2 0 00-3.4 0z"/></svg>
-    <span>${pending.length} demande(s) sans numéro de ticket IT — pensez à les compléter dès réception. <span class="link" data-nav="tickets">Voir les tickets →</span></span></div>`;
+    <span>${pending.length} demande(s) en attente d'un numéro de ticket IT. <span class="link" data-nav="tickets">Voir les tickets →</span></span></div>`;
   }
 
   html += `<div class="section-title"><h2>Demandes en attente d'ID ticket</h2><span class="count">${pending.length} lot(s)</span></div>`;
   html += stubGrid(pending.slice(0,6));
-  if(pending.length===0) html += emptyState('Aucune demande en attente', 'Toutes les demandes ont un numéro de ticket IT.');
+  if(pending.length===0) html += emptyState('Aucune demande en attente', 'Toutes les demandes enregistrées possèdent leur ID ticket IT.');
 
   return html;
 }
@@ -666,35 +585,38 @@ function emptyState(title, sub){
     <div class="es-title">${esc(title)}</div><div>${esc(sub)}</div></div>`;
 }
 
-/* VIEW AGENTS */
+/* AGENTS */
 function viewAgents(){
   let list = [...state.agents];
   const f = state.agentFilter.trim().toLowerCase();
-  if(f) list = list.filter(a=> (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f));
+  if(f) list = list.filter(a=> (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f) || (a.mail||'').toLowerCase().includes(f));
   list.sort((a,b)=> (a.nom||'').localeCompare(b.nom||''));
 
-  let html = `<div class="toolbar">
-    <div class="filter-search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="agent-filter-input" placeholder="Filtrer par nom, matricule…" value="${esc(state.agentFilter)}"></div>
+  let html = `<div class="toolbar" style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+    <div class="filter-search" style="position:relative;width:300px;"><svg viewBox="0 0 24 24" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;stroke:var(--slate-500);fill:none;"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="agent-filter-input" placeholder="Filtrer par nom, matricule, mail…" value="${esc(state.agentFilter)}" style="padding:9px 12px 9px 34px;border-radius:10px;border:1.5px solid var(--border);width:100%;"></div>
     <span class="count text-slate small">${list.length} agent(s)</span>
-    <div class="spacer"></div>
+    <div style="flex:1;"></div>
     <button class="btn btn-primary" data-action="new-agent"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un agent</button>
   </div>`;
 
-  if(!list.length) return html + emptyState('Aucun agent trouvé', 'Ajustez votre recherche ou ajoutez un agent.');
+  if(!list.length) return html + emptyState('Aucun agent trouvé', 'Ajustez votre recherche.');
 
   html += `<div class="table-wrap card"><table><thead><tr>
-    <th>Agent</th><th>Matricule</th><th>Statut</th><th>Ancienneté</th><th></th>
+    <th>Agent</th><th>Matricule</th><th>Statut</th><th>N+1</th><th>Contact</th><th>Session Windows</th><th>Ancienneté</th><th>Actions</th>
   </tr></thead><tbody>`;
   list.forEach(a=>{
     html += `<tr>
       <td><div class="flex items-center gap8"><div class="agent-avatar" style="width:32px;height:32px;font-size:12px;border-radius:9px;">${esc(initials(a.nom))}</div>
-      <div><b>${esc(a.nom)}</b></div></div></td>
-      <td class="mono">${esc(a.matricule)}</td>
+      <div><b>${esc(a.nom)}</b><br><span class="small text-slate">${esc(a.mail||'—')}</span></div></div></td>
+      <td class="mono"><b>${esc(a.matricule)}</b></td>
       <td><span class="chip">${esc(a.statut||'CDI')}</span></td>
+      <td class="small">${esc(a.n1||'—')}</td>
+      <td class="mono small">${esc(a.contact||'—')}</td>
+      <td class="mono small">${esc(a.session||'—')}</td>
       <td class="small">${esc(a.anciennete||'—')}</td>
       <td><div class="flex gap8">
-        <button class="icon-btn" data-open-agent="${esc(a.matricule)}" title="Fiche agent"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        <button class="icon-btn" data-open-agent="${esc(a.matricule)}" title="Fiche complète"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
         <button class="icon-btn" data-edit-agent="${esc(a.matricule)}" title="Modifier"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
         <button class="icon-btn danger" data-del-agent="${esc(a.matricule)}" title="Supprimer"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
       </div></td>
@@ -710,6 +632,12 @@ function agentFormFields(a={}){
     <div class="field"><label>Nom & Prénoms *</label><input id="f-nom" value="${esc(a.nom||'')}" placeholder="NOM Prénom"></div>
     <div class="field"><label>Statut</label><input id="f-statut" value="${esc(a.statut||'CDI')}" placeholder="CDI / CDD / INT MDJ"></div>
     <div class="field"><label>Ancienneté</label><input id="f-anciennete" value="${esc(a.anciennete||'')}" placeholder="ex: 2 ans et 2 mois"></div>
+    <div class="field"><label>Fonction</label><input id="f-fonction" value="${esc(a.fonction||'CSA Appels Entrants MVOLA')}"></div>
+    <div class="field"><label>N+1 Direct</label><input id="f-n1" value="${esc(a.n1||'')}"></div>
+    <div class="field"><label>Numéro de Contact</label><input id="f-contact" value="${esc(a.contact||'')}" placeholder="0380000000"></div>
+    <div class="field"><label>Session Windows (laisser vide si non définie)</label><input id="f-session" value="${esc(a.session||'')}"></div>
+    <div class="field"><label>Mail Agent</label><input id="f-mail" value="${esc(a.mail||'')}" placeholder="prenom.nom@connecteo.mg"></div>
+    <div class="field"><label>Mail N+1</label><input id="f-mailN1" value="${esc(a.mailN1||'')}"></div>
   </div>`;
 }
 
@@ -719,15 +647,22 @@ function openAgentModal(matricule){
     <div class="modal-head"><h3>${matricule?'Modifier cet agent':'Ajouter un agent'}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">${agentFormFields(a)}</div>
     <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-agent-btn">Enregistrer</button></div>
-  `);
+  `, true);
   document.getElementById('save-agent-btn').addEventListener('click', ()=>{
     const matVal = document.getElementById('f-matricule').value.trim();
     const nomVal = document.getElementById('f-nom').value.trim();
     if(!matVal || !nomVal){ toast('Matricule et nom sont obligatoires', false); return; }
+    const sessVal = document.getElementById('f-session').value.trim();
     const data = {
       matricule: matVal, id: matVal, nom: nomVal,
       statut: document.getElementById('f-statut').value.trim(),
-      anciennete: document.getElementById('f-anciennete').value.trim()
+      anciennete: document.getElementById('f-anciennete').value.trim(),
+      fonction: document.getElementById('f-fonction').value.trim(),
+      n1: document.getElementById('f-n1').value.trim(),
+      contact: document.getElementById('f-contact').value.trim(),
+      login: sessVal, session: sessVal,
+      mail: document.getElementById('f-mail').value.trim(),
+      mailN1: document.getElementById('f-mailN1').value.trim()
     };
     if(matricule){
       const idx = state.agents.findIndex(x=>x.matricule===matricule);
@@ -749,16 +684,23 @@ function openAgentDetail(matricule){
   let html = `<div class="agent-hero">
     <div class="agent-avatar">${esc(initials(a.nom))}</div>
     <div class="agent-hero-info"><h2>${esc(a.nom)}</h2>
-      <div class="mono">${esc(a.matricule)} · Statut : ${esc(a.statut||'CDI')}</div>
-      <div>Ancienneté : ${esc(a.anciennete||'—')}</div>
+      <div class="mono">${esc(a.matricule)} · ${esc(a.statut||'CDI')} · ${esc(a.fonction||'—')}</div>
     </div>
+  </div>
+  <div class="detail-grid">
+    <div class="detail-item"><div class="lbl">Ancienneté</div><div class="val">${esc(a.anciennete||'—')}</div></div>
+    <div class="detail-item"><div class="lbl">N+1 Direct</div><div class="val">${esc(a.n1||'—')}</div></div>
+    <div class="detail-item"><div class="lbl">Contact</div><div class="val mono">${esc(a.contact||'—')}</div></div>
+    <div class="detail-item"><div class="lbl">Session Windows</div><div class="val mono">${esc(a.session||'—')}</div></div>
+    <div class="detail-item"><div class="lbl">Mail Connecteo</div><div class="val">${esc(a.mail||'—')}</div></div>
+    <div class="detail-item"><div class="lbl">Mail N+1</div><div class="val">${esc(a.mailN1||'—')}</div></div>
   </div>`;
-  openModal(`<div class="modal-head"><h3>Fiche agent</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  openModal(`<div class="modal-head"><h3>Fiche agent complète</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="modal-body">${html}</div>
   <div class="modal-foot"><button class="btn btn-ghost" data-close>Fermer</button></div>`, true);
 }
 
-/* VIEW NOUVELLE DEMANDE */
+/* NOUVELLE DEMANDE */
 function viewNewRequest(){
   const tool = state.newReqTool ? toolById(state.newReqTool) : null;
   let html = `<div class="card" style="padding:22px;">
@@ -772,14 +714,14 @@ function viewNewRequest(){
   if(tool){
     html += `<div class="field"><label>2. Sélectionner un ou plusieurs agents</label>
       <div class="agent-picker">
-        <div class="ap-search field" style="margin-bottom:8px;"><input id="ap-search" placeholder="Rechercher un agent…"></div>
+        <div class="ap-search field" style="margin-bottom:8px;"><input id="ap-search" placeholder="Rechercher par nom ou matricule…"></div>
         <div id="ap-list"></div>
       </div>
       <div class="selected-chips" id="selected-chips"></div>
     </div>`;
 
     if(state.newReqSelected.length){
-      html += `<div class="field"><label>3. Renseigner les informations par agent</label></div>
+      html += `<div class="field"><label>3. Renseigner les accès par agent</label></div>
       <div class="table-wrap" style="margin-bottom:14px;"><table><thead><tr>
         <th>Agent</th>${tool.champs.map(c=>`<th>${esc(c.label)}</th>`).join('')}<th>Commentaire</th>
       </tr></thead><tbody>`;
@@ -787,12 +729,12 @@ function viewNewRequest(){
         const a = agentByMat(mat);
         html += `<tr><td><b>${esc(a?a.nom:mat)}</b><br><span class="small mono text-slate">${esc(mat)}</span></td>
           ${tool.champs.map(c=>`<td><input class="nr-champ" data-mat="${esc(mat)}" data-key="${c.key}" placeholder="${esc(c.label)}" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td>`).join('')}
-          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire (optionnel)" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
+          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
       });
       html += `</tbody></table></div>
       <div class="field"><label>Commentaire global (optionnel)</label>
-        <textarea id="nr-global-comment" placeholder="ex: Merci de traiter en urgence, prise de poste demain"></textarea></div>
-      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer la demande & le tableau récap</button>`;
+        <textarea id="nr-global-comment" placeholder="Note pour le support IT..."></textarea></div>
+      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer le tableau récapitulatif</button>`;
     }
   }
   html += `</div>`;
@@ -808,17 +750,16 @@ function renderRecapBlock(req){
   let rows = req.lignes.map(l=>{
     const a = agentByMat(l.matricule) || {};
     const loginConcerne = t.champs.map(c=> l.valeurs[c.key]).filter(Boolean).join(' / ') || '—';
-    return `<tr><td>${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td><td>${esc(a.statut||'')}</td><td>${esc(loginConcerne)}</td><td>${esc(l.commentaire||'')}</td></tr>`;
+    return `<tr><td>${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td><td>${esc(a.contact||'')}</td><td>${esc(a.fonction||'')}</td><td>${esc(loginConcerne)}</td><td>${esc(a.mailN1||'')}</td><td>${esc(l.commentaire||'')}</td></tr>`;
   }).join('');
-  const tableHtml = `<table class="recap-table" id="recap-table-${req.id}"><thead><tr><th>Matricule</th><th>Nom & Prénom</th><th>Statut</th><th>Login concerné</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table>`;
+  const tableHtml = `<table class="recap-table" id="recap-table-${req.id}"><thead><tr><th>Matricule</th><th>Nom & Prénom</th><th>Contact</th><th>Fonction</th><th>Login concerné</th><th>Mail N+1</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table>`;
   return `<div class="section-title"><h2>Récapitulatif généré — ${esc(t.nom)}</h2><span class="tag tag-amber">Statut : En attente ID IT</span></div>
   <div class="card" style="padding:18px;">
     <div class="table-wrap">${tableHtml}</div>
     <div class="flex gap8" style="margin-top:14px;">
-      <button class="btn btn-primary" data-copy-request="${req.id}"><svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v2M10 8h10a2 2 0 012 2v10a2 2 0 01-2 2H10a2 2 0 01-2-2V10a2 2 0 012-2z"/></svg> Copier le tableau (pour email)</button>
-      <button class="btn btn-ghost" data-nav="tickets">Aller au suivi des tickets</button>
+      <button class="btn btn-primary" data-copy-request="${req.id}"><svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v2M10 8h10a2 2 0 012 2v10a2 2 0 01-2 2H10a2 2 0 01-2-2V10a2 2 0 012-2z"/></svg> Copier le tableau pour email</button>
+      <button class="btn btn-ghost" data-nav="tickets">Voir le suivi</button>
     </div>
-    <p class="small text-slate" style="margin-top:10px;">Collez ce tableau directement dans votre email.</p>
   </div>`;
 }
 
@@ -829,7 +770,7 @@ function renderApList(filterText=''){
   let list = state.agents.filter(a=> !f || (a.nom||'').toLowerCase().includes(f) || (a.matricule||'').toLowerCase().includes(f));
   list.sort((a,b)=>(a.nom||'').localeCompare(b.nom||''));
   box.innerHTML = list.slice(0,100).map(a=>`<label class="ap-row"><input type="checkbox" value="${esc(a.matricule)}" ${state.newReqSelected.includes(a.matricule)?'checked':''}>
-    <div><div class="ap-name">${esc(a.nom)}</div><div class="ap-mat">${esc(a.matricule)}</div></div></label>`).join('') || '<div class="small text-slate" style="padding:10px;">Aucun agent trouvé</div>';
+    <div><div class="ap-name">${esc(a.nom)}</div><div class="ap-mat">${esc(a.matricule)} — <span class="text-slate">${esc(a.statut||'CDI')}</span></div></div></label>`).join('') || '<div class="small text-slate" style="padding:10px;">Aucun agent trouvé</div>';
   box.querySelectorAll('input[type=checkbox]').forEach(cb=>{
     cb.addEventListener('change', ()=>{
       if(cb.checked) state.newReqSelected.push(cb.value);
@@ -854,7 +795,7 @@ function renderSelectedChips(){
   });
 }
 
-/* VIEW TICKETS */
+/* TICKETS */
 function viewTickets(){
   let list = [...state.requests];
   list.sort((a,b)=> new Date(b.dateCreation)-new Date(a.dateCreation));
@@ -864,26 +805,9 @@ function viewTickets(){
   return html + `</div>`;
 }
 
-/* VIEW PASSWORDS */
-function viewPasswords(){
-  let rows = allLignes().filter(x=> x.ligne.dateModifMdp || x.ligne.motDePasse);
-  const withStatus = rows.map(x=>({...x, st: pwStatus(x.ligne.dateModifMdp)}));
-  if(!withStatus.length) return emptyState('Aucun mot de passe', "Renseignez des mots de passe dans vos demandes.");
-  let html = `<div class="table-wrap card"><table><thead><tr><th>Agent</th><th>Outil</th><th>Mot de passe</th><th>Modifié le</th><th>Statut</th></tr></thead><tbody>`;
-  withStatus.forEach(x=>{
-    const a = agentByMat(x.ligne.matricule)||{};
-    const t = toolById(x.req.toolId);
-    html += `<tr><td><b>${esc(a.nom||x.ligne.matricule)}</b></td><td>${esc(t?t.nom:'')}</td><td class="mono">${esc(x.ligne.motDePasse||'—')}</td>
-      <td class="mono">${fmtDate(x.ligne.dateModifMdp)}</td>
-      <td><span class="pw-pill ${x.st.cls}"><span class="pw-dot"></span>${x.st.label}</span></td></tr>`;
-  });
-  return html + `</tbody></table></div>`;
-}
-
-/* VIEW TOOLS */
+/* OUTILS */
 function viewTools(){
-  let html = `<div class="toolbar">
-    <div class="spacer"></div>
+  let html = `<div class="toolbar" style="margin-bottom:16px;">
     <button class="btn btn-primary" id="btn-add-tool"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un outil</button>
   </div>
   <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
@@ -895,11 +819,10 @@ function viewTools(){
           <b style="font-size:15px;">${esc(t.nom)}</b>
         </div>
         <div class="small text-slate"><b>Champs :</b> ${t.champs.map(c=>esc(c.label)).join(', ')}</div>
-        <div class="small text-slate" style="margin-top:4px;"><b>Gestion MDP :</b> ${t.gerePassword?'Oui':'Non'}</div>
       </div>
       <div class="flex gap8" style="justify-content:flex-end;border-top:1px solid var(--border);padding-top:10px;">
-        <button class="icon-btn" data-edit-tool="${esc(t.id)}" title="Modifier"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
-        <button class="icon-btn danger" data-del-tool="${esc(t.id)}" title="Supprimer"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
+        <button class="icon-btn" data-edit-tool="${esc(t.id)}"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+        <button class="icon-btn danger" data-del-tool="${esc(t.id)}"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
       </div>
     </div>`;
   });
@@ -915,7 +838,6 @@ function openToolModal(toolId){
       <div class="field"><label>Nom de l'outil *</label><input id="f-tool-nom" value="${esc(t.nom||'')}" placeholder="ex: Application CRM"></div>
       <div class="field"><label>Couleur d'accentuation (Hex)</label><input id="f-tool-couleur" value="${esc(t.couleur||'#E8A33D')}" type="color" style="height:40px;padding:2px;"></div>
       <div class="field"><label>Champs spécifiques (séparés par des virgules) *</label><input id="f-tool-champs" value="${esc(champsStr)}" placeholder="ex: Login CRM, Profil accès"></div>
-      <div class="field" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" id="f-tool-mdp" ${t.gerePassword?'checked':''} style="width:18px;height:18px;"><label for="f-tool-mdp" style="margin:0;cursor:pointer;">Gérer les mots de passe pour cet outil</label></div>
     </div>
     <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-tool-btn">Enregistrer</button></div>
   `);
@@ -935,7 +857,7 @@ function openToolModal(toolId){
       nom: nomVal,
       couleur: document.getElementById('f-tool-couleur').value,
       champs: champsArr,
-      gerePassword: document.getElementById('f-tool-mdp').checked
+      gerePassword: true
     };
 
     if(toolId){
@@ -950,19 +872,6 @@ function openToolModal(toolId){
     toast(toolId?'Outil mis à jour':'Outil ajouté');
     renderContent();
   });
-}
-
-/* VIEW HISTORY */
-function viewHistory(){
-  const termines = state.requests.filter(r=>r.statut==='termine');
-  if(!termines.length) return emptyState('Aucun historique', 'Les demandes terminées apparaîtront ici.');
-  let html = `<div class="table-wrap card"><table><thead><tr><th>Date</th><th>Outil</th><th>Ticket</th><th>Agents</th></tr></thead><tbody>`;
-  termines.forEach(r=>{
-    const t = toolById(r.toolId);
-    html += `<tr><td class="mono small">${fmtDate(r.dateCreation)}</td><td>${esc(t?t.nom:'')}</td><td class="mono">${esc(r.ticketId||'—')}</td>
-      <td class="small">${r.lignes.map(l=>esc(l.matricule)).join(', ')}</td></tr>`;
-  });
-  return html + `</tbody></table></div>`;
 }
 
 /* MODALS */
@@ -983,8 +892,7 @@ function openRequestModal(reqId){
   let rows = req.lignes.map(l=>{
     const a = agentByMat(l.matricule)||{};
     return `<tr><td class="mono">${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td>
-      <td><input class="rl-mdp" data-ligne="${l.id}" value="${esc(l.motDePasse||'')}" placeholder="mot de passe" style="padding:4px 6px;"></td>
-      <td><input type="date" class="rl-date" data-ligne="${l.id}" value="${esc(l.dateModifMdp||'')}"></td></tr>`;
+      <td><input class="rl-comment" data-ligne="${l.id}" value="${esc(l.commentaire||'')}" placeholder="Commentaire" style="width:100%;padding:4px 6px;"></td></tr>`;
   }).join('');
 
   const body = `
@@ -993,7 +901,7 @@ function openRequestModal(reqId){
       <option value="en_cours" ${req.statut==='en_cours'?'selected':''}>En cours</option>
       <option value="termine" ${req.statut==='termine'?'selected':''}>Terminé</option>
     </select></div>
-    <div class="table-wrap"><table><thead><tr><th>Matricule</th><th>Nom</th><th>Mot de passe</th><th>Modifié le</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="table-wrap"><table><thead><tr><th>Matricule</th><th>Nom</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table></div>
   `;
   openModal(`<div class="modal-head"><h3>Demande — ${esc(t?t.nom:'Outil')}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
   <div class="modal-body">${body}</div>
@@ -1005,11 +913,8 @@ function openRequestModal(reqId){
   document.getElementById('save-request-btn').addEventListener('click', ()=>{
     req.ticketId = document.getElementById('req-ticket').value.trim();
     req.statut = document.getElementById('req-statut').value;
-    document.querySelectorAll('.rl-mdp').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.motDePasse = inp.value.trim();
-    });
-    document.querySelectorAll('.rl-date').forEach(inp=>{
-      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.dateModifMdp = inp.value;
+    document.querySelectorAll('.rl-comment').forEach(inp=>{
+      const l = req.lignes.find(l=>l.id===inp.dataset.ligne); if(l) l.commentaire = inp.value.trim();
     });
     persistRequests();
     closeModal();
@@ -1029,11 +934,11 @@ async function copyRequestRecap(reqId){
   const req = state.requests.find(r=>r.id===reqId);
   if(!req) return;
   const t = toolById(req.toolId);
-  const headers = ['Matricule','Nom & Prénom','Statut','Login concerné','Commentaire'];
+  const headers = ['Matricule','Nom & Prénom','Contact','Fonction','Login concerné','Mail N+1','Commentaire'];
   const rows = req.lignes.map(l=>{
     const a = agentByMat(l.matricule)||{};
     const login = t.champs.map(c=>l.valeurs?.[c.key]).filter(Boolean).join(' / ') || '';
-    return [l.matricule, a.nom||'', a.statut||'', login, l.commentaire||''];
+    return [l.matricule, a.nom||'', a.contact||'', a.fonction||'', login, a.mailN1||'', l.commentaire||''];
   });
   const htmlTable = `<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px;">
     <thead><tr>${headers.map(h=>`<th style="background:#12203D;color:#fff;text-align:left;">${esc(h)}</th>`).join('')}</tr></thead>
@@ -1063,7 +968,6 @@ function bindContentEvents(){
   document.querySelectorAll('[data-open-request]').forEach(el=> el.addEventListener('click', ()=> openRequestModal(el.dataset.openRequest)));
   document.querySelectorAll('[data-copy-request]').forEach(el=> el.addEventListener('click', ()=> copyRequestRecap(el.dataset.copyRequest)));
 
-  /* Evénements Agents */
   const newAgentBtn = document.querySelector('[data-action="new-agent"]');
   if(newAgentBtn) newAgentBtn.addEventListener('click', ()=> openAgentModal(null));
 
@@ -1081,7 +985,6 @@ function bindContentEvents(){
     });
   });
 
-  /* Evénements Outils */
   const addToolBtn = document.getElementById('btn-add-tool');
   if(addToolBtn) addToolBtn.addEventListener('click', ()=> openToolModal(null));
 
@@ -1128,13 +1031,13 @@ function bindContentEvents(){
       });
       const commentInp = document.querySelector(`.nr-comment[data-mat="${CSS.escape(mat)}"]`);
       const commentaire = (commentInp ? commentInp.value.trim() : '') || globalComment;
-      return { id: uid(), matricule: mat, valeurs, commentaire, motDePasse:'', dateModifMdp:'' };
+      return { id: uid(), matricule: mat, valeurs, commentaire };
     });
     const req = { id: uid(), toolId: tool.id, dateCreation: todayISO(), ticketId:'', statut:'en_cours', commentaireGlobal: globalComment, lignes };
     state.requests.push(req);
     persistRequests();
     state.lastGeneratedRequest = req;
-    toast('Demande générée avec le récapitulatif');
+    toast('Demande générée');
     renderRail();
     renderContent();
   });
