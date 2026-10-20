@@ -45,7 +45,7 @@ button{font-family:inherit;cursor:pointer;}
 input,select,textarea{font-family:inherit;}
 ::selection{background:var(--amber);color:var(--ink);}
 
-/* ===== LAYOUT ===== */
+/* LAYOUT */
 #app{display:flex;height:100vh;width:100vw;}
 
 /* RAIL NAV */
@@ -361,7 +361,7 @@ tbody tr:hover{background:#FAFBFD;}
 <div id="toast"></div>
 
 <script>
-/* SEED DATA (Base originale) */
+/* SEED DATA */
 const SEED_AGENTS = [
   {"matricule": "CN00455", "nom": "RASOAMALALA Tanjona Nomenahary", "n1": "FenoRANDRIANARIVELO Tojosoa Mamy Hasiniaina", "session": "", "contact": "034 00 323 01", "login": "tanjona10", "mail": "tanjona.rasoamalala@connecteo.mg", "mailN1": "Fenohasiniaina.randrianarivelo@connecteo.mg", "anciennete": "3 ans 4 mois 24 jours", "hermes": 1117, "amdocs": ""},
   {"matricule": "CN00213", "nom": "RAVONISON Hanitra Martina", "n1": "RASOAMALALA Tanjona Nomenahary", "session": "martina1", "contact": "034 00 310 46", "login": "martina1", "mail": "Martina.RAVONISON@connecteo.mg", "mailN1": "tanjona.rasoamalala@connecteo.mg", "anciennete": "7 ans 3 mois 17 jours", "hermes": 1031, "amdocs": ""},
@@ -392,6 +392,7 @@ let state = {
   historyAgent: null,
   newReqSelected: [],
   newReqTool: null,
+  lastGeneratedRequest: null
 };
 
 function storageGet(key, fallback){
@@ -703,7 +704,6 @@ function openAgentModal(matricule){
 function openAgentDetail(matricule){
   const a = agentByMat(matricule);
   if(!a) return;
-  const lignes = allLignes().filter(x=>x.ligne.matricule===matricule);
   let html = `<div class="agent-hero">
     <div class="agent-avatar">${esc(initials(a.nom))}</div>
     <div class="agent-hero-info"><h2>${esc(a.nom)}</h2>
@@ -716,7 +716,7 @@ function openAgentDetail(matricule){
   <div class="modal-foot"><button class="btn btn-ghost" data-close>Fermer</button></div>`, true);
 }
 
-/* VIEW NOUVELLE DEMANDE */
+/* VIEW NOUVELLE DEMANDE & BLOC RECAPITULATIF POUR EMAIL */
 function viewNewRequest(){
   const tool = state.newReqTool ? toolById(state.newReqTool) : null;
   let html = `<div class="card" style="padding:22px;">
@@ -745,13 +745,39 @@ function viewNewRequest(){
         const a = agentByMat(mat);
         html += `<tr><td><b>${esc(a?a.nom:mat)}</b><br><span class="small mono text-slate">${esc(mat)}</span></td>
           ${tool.champs.map(c=>`<td><input class="nr-champ" data-mat="${esc(mat)}" data-key="${c.key}" placeholder="${esc(c.label)}" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td>`).join('')}
-          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
+          <td><input class="nr-comment" data-mat="${esc(mat)}" placeholder="Commentaire (optionnel)" style="width:100%;padding:7px 9px;border-radius:7px;border:1px solid var(--border);"></td></tr>`;
       });
       html += `</tbody></table></div>
-      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer la demande</button>`;
+      <div class="field"><label>Commentaire global (optionnel — s'ajoutera à toutes les lignes)</label>
+        <textarea id="nr-global-comment" placeholder="ex: Merci de traiter en urgence, prise de poste demain"></textarea></div>
+      <button class="btn btn-amber" id="create-request-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Générer la demande & le tableau récap</button>`;
     }
   }
-  return html + `</div>`;
+  html += `</div>`;
+
+  if(tool && state.lastGeneratedRequest){
+    html += renderRecapBlock(state.lastGeneratedRequest);
+  }
+  return html;
+}
+
+function renderRecapBlock(req){
+  const t = toolById(req.toolId);
+  let rows = req.lignes.map(l=>{
+    const a = agentByMat(l.matricule) || {};
+    const loginConcerne = t.champs.map(c=> l.valeurs[c.key]).filter(Boolean).join(' / ') || '—';
+    return `<tr><td>${esc(l.matricule)}</td><td>${esc(a.nom||'')}</td><td>${esc(a.contact||'')}</td><td>${esc(a.fonction||'')}</td><td>${esc(loginConcerne)}</td><td>${esc(a.mailN1||'')}</td><td>${esc(l.commentaire||'')}</td></tr>`;
+  }).join('');
+  const tableHtml = `<table class="recap-table" id="recap-table-${req.id}"><thead><tr><th>Matricule</th><th>Nom & Prénom</th><th>Contact</th><th>Fonction</th><th>Login concerné</th><th>Mail N+1</th><th>Commentaire</th></tr></thead><tbody>${rows}</tbody></table>`;
+  return `<div class="section-title"><h2>Récapitulatif généré — ${esc(t.nom)}</h2><span class="tag tag-amber">Statut : En attente ID IT</span></div>
+  <div class="card" style="padding:18px;">
+    <div class="table-wrap">${tableHtml}</div>
+    <div class="flex gap8" style="margin-top:14px;">
+      <button class="btn btn-primary" data-copy-request="${req.id}"><svg viewBox="0 0 24 24"><path d="M8 16H6a2 2 0 01-2-2V4a2 2 0 012-2h10a2 2 0 012 2v2M10 8h10a2 2 0 012 2v10a2 2 0 01-2 2H10a2 2 0 01-2-2V10a2 2 0 012-2z"/></svg> Copier le tableau (pour email)</button>
+      <button class="btn btn-ghost" data-nav="tickets">Aller au suivi des tickets</button>
+    </div>
+    <p class="small text-slate" style="margin-top:10px;">Collez ce tableau directement dans votre logiciel de messagerie. Aucun mail n'est envoyé automatiquement.</p>
+  </div>`;
 }
 
 function renderApList(filterText=''){
@@ -900,14 +926,36 @@ function openRequestModal(reqId){
   });
 }
 
-function copyRequestRecap(reqId){
+async function copyRequestRecap(reqId){
   const req = state.requests.find(r=>r.id===reqId);
+  if(!req) return;
+  const t = toolById(req.toolId);
+  const headers = ['Matricule','Nom & Prénom','Contact','Fonction','Login concerné','Mail N+1','Commentaire'];
   const rows = req.lignes.map(l=>{
     const a = agentByMat(l.matricule)||{};
-    return [l.matricule, a.nom||'', a.contact||'', l.commentaire||''].join('\t');
-  }).join('\n');
-  navigator.clipboard.writeText(rows);
-  toast('Récapitulatif copié dans le presse-papier');
+    const login = t.champs.map(c=>l.valeurs?.[c.key]).filter(Boolean).join(' / ') || '';
+    return [l.matricule, a.nom||'', a.contact||'', a.fonction||'', login, a.mailN1||'', l.commentaire||''];
+  });
+  const htmlTable = `<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:12px;">
+    <thead><tr>${headers.map(h=>`<th style="background:#12203D;color:#fff;text-align:left;">${esc(h)}</th>`).join('')}</tr></thead>
+    <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+  const plainText = [headers.join('\t'), ...rows.map(r=>r.join('\t'))].join('\n');
+
+  try{
+    if(window.ClipboardItem){
+      const item = new ClipboardItem({
+        'text/html': new Blob([htmlTable], {type:'text/html'}),
+        'text/plain': new Blob([plainText], {type:'text/plain'}),
+      });
+      await navigator.clipboard.write([item]);
+    } else {
+      await navigator.clipboard.writeText(plainText);
+    }
+    toast('Tableau copié — collez-le dans votre email');
+  }catch(e){
+    try{ await navigator.clipboard.writeText(plainText); toast('Tableau copié (texte)'); }
+    catch(e2){ toast('Erreur de copie', false); }
+  }
 }
 
 function bindContentEvents(){
@@ -944,7 +992,7 @@ function bindContentEvents(){
   }
 
   const nrTool = document.getElementById('nr-tool');
-  if(nrTool) nrTool.addEventListener('change', ()=>{ state.newReqTool = nrTool.value || null; state.newReqSelected=[]; renderContent(); });
+  if(nrTool) nrTool.addEventListener('change', ()=>{ state.newReqTool = nrTool.value || null; state.newReqSelected=[]; state.lastGeneratedRequest=null; renderContent(); });
   const apSearch = document.getElementById('ap-search');
   if(apSearch){ renderApList(); apSearch.addEventListener('input', ()=> renderApList(apSearch.value)); }
   renderSelectedChips();
@@ -952,14 +1000,25 @@ function bindContentEvents(){
   const createBtn = document.getElementById('create-request-btn');
   if(createBtn) createBtn.addEventListener('click', ()=>{
     const tool = toolById(state.newReqTool);
-    const lignes = state.newReqSelected.map(mat=>({
-      id: uid(), matricule: mat, valeurs:{}, commentaire:'', motDePasse:'', dateModifMdp:''
-    }));
-    const req = {id: uid(), toolId: tool.id, dateCreation: todayISO(), ticketId:'', statut:'en_cours', lignes};
+    const globalCommentInp = document.getElementById('nr-global-comment');
+    const globalComment = globalCommentInp ? globalCommentInp.value.trim() : '';
+    const lignes = state.newReqSelected.map(mat=>{
+      const valeurs = {};
+      tool.champs.forEach(c=>{
+        const inp = document.querySelector(`.nr-champ[data-mat="${CSS.escape(mat)}"][data-key="${CSS.escape(c.key)}"]`);
+        valeurs[c.key] = inp ? inp.value.trim() : '';
+      });
+      const commentInp = document.querySelector(`.nr-comment[data-mat="${CSS.escape(mat)}"]`);
+      const commentaire = (commentInp ? commentInp.value.trim() : '') || globalComment;
+      return { id: uid(), matricule: mat, valeurs, commentaire, motDePasse:'', dateModifMdp:'' };
+    });
+    const req = { id: uid(), toolId: tool.id, dateCreation: todayISO(), ticketId:'', statut:'en_cours', commentaireGlobal: globalComment, lignes };
     state.requests.push(req);
     persistRequests();
-    toast('Demande enregistrée');
-    switchView('tickets');
+    state.lastGeneratedRequest = req;
+    toast('Demande générée avec le récapitulatif');
+    renderRail();
+    renderContent();
   });
 }
 
