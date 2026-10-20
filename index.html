@@ -716,7 +716,7 @@ function openAgentDetail(matricule){
   <div class="modal-foot"><button class="btn btn-ghost" data-close>Fermer</button></div>`, true);
 }
 
-/* VIEW NOUVELLE DEMANDE & BLOC RECAPITULATIF POUR EMAIL */
+/* VIEW NOUVELLE DEMANDE */
 function viewNewRequest(){
   const tool = state.newReqTool ? toolById(state.newReqTool) : null;
   let html = `<div class="card" style="padding:22px;">
@@ -838,19 +838,76 @@ function viewPasswords(){
   return html + `</tbody></table></div>`;
 }
 
-/* VIEW TOOLS */
+/* VIEW TOOLS WITH ADD/EDIT/DELETE */
 function viewTools(){
-  let html = `<div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
+  let html = `<div class="toolbar">
+    <div class="spacer"></div>
+    <button class="btn btn-primary" id="btn-add-tool"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ajouter un outil</button>
+  </div>
+  <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr));">`;
   state.tools.forEach(t=>{
-    html += `<div class="card" style="padding:16px;">
-      <div class="flex items-center gap8" style="margin-bottom:8px;">
-        <div style="width:14px;height:14px;border-radius:4px;background:${t.couleur};"></div>
-        <b>${esc(t.nom)}</b>
+    html += `<div class="card" style="padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+      <div>
+        <div class="flex items-center gap8" style="margin-bottom:10px;">
+          <div style="width:14px;height:14px;border-radius:4px;background:${t.couleur||'var(--amber)'};"></div>
+          <b style="font-size:15px;">${esc(t.nom)}</b>
+        </div>
+        <div class="small text-slate"><b>Champs :</b> ${t.champs.map(c=>esc(c.label)).join(', ')}</div>
+        <div class="small text-slate" style="margin-top:4px;"><b>Gestion MDP :</b> ${t.gerePassword?'Oui':'Non'}</div>
       </div>
-      <div class="small text-slate">Champs : ${t.champs.map(c=>esc(c.label)).join(', ')}</div>
+      <div class="flex gap8" style="justify-content:flex-end;border-top:1px solid var(--border);padding-top:10px;">
+        <button class="icon-btn" data-edit-tool="${esc(t.id)}" title="Modifier"><svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+        <button class="icon-btn danger" data-del-tool="${esc(t.id)}" title="Supprimer"><svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"/></svg></button>
+      </div>
     </div>`;
   });
   return html + `</div>`;
+}
+
+function openToolModal(toolId){
+  const t = toolId ? toolById(toolId) : {};
+  const champsStr = t.champs ? t.champs.map(c=>c.label).join(', ') : '';
+  openModal(`
+    <div class="modal-head"><h3>${toolId?'Modifier l\'outil':'Ajouter un outil'}</h3><button class="modal-close" data-close><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="field"><label>Nom de l'outil *</label><input id="f-tool-nom" value="${esc(t.nom||'')}" placeholder="ex: Application CRM"></div>
+      <div class="field"><label>Couleur d'accentuation (Hex)</label><input id="f-tool-couleur" value="${esc(t.couleur||'#E8A33D')}" type="color" style="height:40px;padding:2px;"></div>
+      <div class="field"><label>Champs spécifiques (séparés par des virgules) *</label><input id="f-tool-champs" value="${esc(champsStr)}" placeholder="ex: Login CRM, Profil accès"></div>
+      <div class="field" style="flex-direction:row;align-items:center;gap:10px;"><input type="checkbox" id="f-tool-mdp" ${t.gerePassword?'checked':''} style="width:18px;height:18px;"><label for="f-tool-mdp" style="margin:0;cursor:pointer;">Gérer les mots de passe pour cet outil</label></div>
+    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>Annuler</button><button class="btn btn-primary" id="save-tool-btn">Enregistrer</button></div>
+  `);
+
+  document.getElementById('save-tool-btn').addEventListener('click', ()=>{
+    const nomVal = document.getElementById('f-tool-nom').value.trim();
+    const champsRaw = document.getElementById('f-tool-champs').value.trim();
+    if(!nomVal || !champsRaw){ toast('Nom et champs requis', false); return; }
+
+    const champsArr = champsRaw.split(',').map((c, i)=>{
+      const lbl = c.trim();
+      return { key: 'champ_'+i+'_'+lbl.toLowerCase().replace(/[^a-z0-9]/g,''), label: lbl };
+    }).filter(c=>c.label);
+
+    const data = {
+      id: toolId || 'tool_'+uid(),
+      nom: nomVal,
+      couleur: document.getElementById('f-tool-couleur').value,
+      champs: champsArr,
+      gerePassword: document.getElementById('f-tool-mdp').checked
+    };
+
+    if(toolId){
+      const idx = state.tools.findIndex(x=>x.id===toolId);
+      if(idx!==-1) state.tools[idx] = data;
+    } else {
+      state.tools.push(data);
+    }
+
+    persistTools();
+    closeModal();
+    toast(toolId?'Outil mis à jour':'Outil ajouté');
+    renderContent();
+  });
 }
 
 /* VIEW HISTORY */
@@ -964,6 +1021,7 @@ function bindContentEvents(){
   document.querySelectorAll('[data-open-request]').forEach(el=> el.addEventListener('click', ()=> openRequestModal(el.dataset.openRequest)));
   document.querySelectorAll('[data-copy-request]').forEach(el=> el.addEventListener('click', ()=> copyRequestRecap(el.dataset.copyRequest)));
 
+  /* Evénements Agents */
   const newAgentBtn = document.querySelector('[data-action="new-agent"]');
   if(newAgentBtn) newAgentBtn.addEventListener('click', ()=> openAgentModal(null));
 
@@ -977,6 +1035,24 @@ function bindContentEvents(){
       state.agents = state.agents.filter(a => a.matricule !== el.dataset.delAgent);
       persistAgents();
       toast('Agent supprimé');
+      renderContent();
+    });
+  });
+
+  /* Evénements Outils */
+  const addToolBtn = document.getElementById('btn-add-tool');
+  if(addToolBtn) addToolBtn.addEventListener('click', ()=> openToolModal(null));
+
+  document.querySelectorAll('[data-edit-tool]').forEach(el => {
+    el.addEventListener('click', () => openToolModal(el.dataset.editTool));
+  });
+
+  document.querySelectorAll('[data-del-tool]').forEach(el => {
+    el.addEventListener('click', () => {
+      if(!confirm('Supprimer cet outil ?')) return;
+      state.tools = state.tools.filter(t => t.id !== el.dataset.delTool);
+      persistTools();
+      toast('Outil supprimé');
       renderContent();
     });
   });
